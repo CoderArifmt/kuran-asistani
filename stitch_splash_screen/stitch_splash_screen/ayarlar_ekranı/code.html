@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ayarlar - Namaz ve Kur'an Asistanı</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#14b866",
+            "background-light": "#f6f8f7",
+            "background-dark": "#112119",
+            "surface-light": "#ffffff",
+            "surface-dark": "#1a2d24",
+            "text-light": "#1f2937",
+            "text-dark": "#e5e7eb",
+            "text-secondary-light": "#6b7280",
+            "text-secondary-dark": "#9ca3af",
+            "primary-light-text": "#166534",
+            "primary-dark-text": "#6ee7b7",
+            "border-light": "#e5e7eb",
+            "border-dark": "#374151"
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative w-full min-h-screen">
+<header class="sticky top-0 z-10 flex items-center justify-between p-4 bg-background-light dark:bg-background-dark border-b border-border-light dark:border-border-dark">
+<button class="flex items-center justify-center text-text-light dark:text-text-dark size-10">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold leading-tight tracking-tight text-text-light dark:text-text-dark">Ayarlar</h1>
+<div class="size-10"></div> 
+</header>
+<main class="flex flex-col px-4 pb-8">
+<div class="pt-6">
+<h2 class="px-4 pb-2 text-sm font-bold tracking-wider uppercase text-primary-light-text dark:text-primary-dark-text">GÖRÜNÜM</h2>
+<div class="overflow-hidden bg-surface-light dark:bg-surface-dark rounded-xl">
+<div class="flex items-center gap-4 px-4 py-3 min-h-[72px]">
+<div class="flex items-center justify-center shrink-0 size-10 bg-primary/10 dark:bg-primary/20 rounded-full text-primary-light-text dark:text-primary-dark-text">
+<span class="material-symbols-outlined">palette</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium leading-normal text-text-light dark:text-text-dark">Tema</p>
+<p class="text-sm leading-normal text-text-secondary-light dark:text-text-secondary-dark">Açık, Koyu, Sistem</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">chevron_right</span>
+</div>
+</div>
+<hr class="border-border-light dark:border-border-dark ml-18"/>
+<div class="flex items-center gap-4 px-4 py-3 min-h-[72px]">
+<div class="flex items-center justify-center shrink-0 size-10 bg-primary/10 dark:bg-primary/20 rounded-full text-primary-light-text dark:text-primary-dark-text">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium leading-normal text-text-light dark:text-text-dark">Saat Formatı</p>
+<p class="text-sm leading-normal text-text-secondary-light dark:text-text-secondary-dark">12 / 24 saat</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-6">
+<h2 class="px-4 pb-2 text-sm font-bold tracking-wider uppercase text-primary-light-text dark:text-primary-dark-text">Bildirim &amp; Alarm Ayarları</h2>
+<div class="overflow-hidden bg-surface-light dark:bg-surface-dark rounded-xl">
+<div class="flex items-center gap-4 px-4 py-3 min-h-[72px]">
+<div class="flex items-center justify-center shrink-0 size-10 bg-primary/10 dark:bg-primary/20 rounded-full text-primary-light-text dark:text-primary-dark-text">
+<span class="material-symbols-outlined">music_note</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium leading-normal text-text-light dark:text-text-dark">Ezan Sesi Seçimi</p>
+<p class="text-sm leading-normal text-text-secondary-light dark:text-text-secondary-dark">Varsayılan Ezan</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">chevron_right</span>
+</div>
+</div>
+<hr class="border-border-light dark:border-border-dark ml-18"/>
+<div class="flex items-center gap-4 px-4 py-3 min-h-[56px]">
+<p class="flex-1 text-base font-medium leading-normal text-text-light dark:text-text-dark ml-14">İmsak için Ezan Oku</p>
+<div class="shrink-0">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 min-h-[56px]">
+<p class="flex-1 text-base font-medium leading-normal text-text-light dark:text-text-dark ml-14">Sabah için Ezan Oku</p>
+<div class="shrink-0">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 min-h-[56px]">
+<p class="flex-1 text-base font-medium leading-normal text-text-light dark:text-text-dark ml-14">Öğle için Ezan Oku</p>
+<div class="shrink-0">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 min-h-[56px]">
+<p class="flex-1 text-base font-medium leading-normal text-text-light dark:text-text-dark ml-14">İkindi için Ezan Oku</p>
+<div class="shrink-0">
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 min-h-[56px]">
+<p class="flex-1 text-base font-medium leading-normal text-text-light dark:text-text-dark ml-14">Akşam için Ezan Oku</p>
+<div class="shrink-0">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 min-h-[56px]">
+<p class="flex-1 text-base font-medium leading-normal text-text-light dark:text-text-dark ml-14">Yatsı için Ezan Oku</p>
+<div class="shrink-0">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<hr class="border-border-light dark:border-border-dark ml-18"/>
+<div class="flex items-center gap-4 px-4 py-3 min-h-[72px]">
+<div class="flex items-center justify-center shrink-0 size-10 bg-primary/10 dark:bg-primary/20 rounded-full text-primary-light-text dark:text-primary-dark-text">
+<span class="material-symbols-outlined">alarm_add</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium leading-normal text-text-light dark:text-text-dark">Vakit Girmeden Hatırlat</p>
+<p class="text-sm leading-normal text-text-secondary-light dark:text-text-secondary-dark">15 dakika önce</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">chevron_right</span>
+</div>
+</div>
+<hr class="border-border-light dark:border-border-dark ml-18"/>
+<div class="flex items-center gap-4 px-4 py-3 min-h-[72px]">
+<div class="flex items-center justify-center shrink-0 size-10 bg-primary/10 dark:bg-primary/20 rounded-full text-primary-light-text dark:text-primary-dark-text">
+<span class="material-symbols-outlined">alarm_on</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium leading-normal text-text-light dark:text-text-dark">Vakit Çıkmadan Hatırlat</p>
+<p class="text-sm leading-normal text-text-secondary-light dark:text-text-secondary-dark">30 dakika önce</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">chevron_right</span>
+</div>
+</div>
+<hr class="border-border-light dark:border-border-dark ml-18"/>
+<div class="flex items-center gap-4 px-4 py-3 min-h-[72px]">
+<div class="flex items-center justify-center shrink-0 size-10 bg-primary/10 dark:bg-primary/20 rounded-full text-primary-light-text dark:text-primary-dark-text">
+<span class="material-symbols-outlined">notifications_active</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium leading-normal text-text-light dark:text-text-dark">Bildirim Sesi</p>
+<p class="text-sm leading-normal text-text-secondary-light dark:text-text-secondary-dark">Varsayılan</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">chevron_right</span>
+</div>
+</div>
+<hr class="border-border-light dark:border-border-dark ml-18"/>
+<div class="flex items-center gap-4 px-4 py-3 min-h-[72px]">
+<div class="flex items-center justify-center shrink-0 size-10 bg-primary/10 dark:bg-primary/20 rounded-full text-primary-light-text dark:text-primary-dark-text">
+<span class="material-symbols-outlined">vibration</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium leading-normal text-text-light dark:text-text-dark">Titreşim</p>
+<p class="text-sm leading-normal text-text-secondary-light dark:text-text-secondary-dark">Ezan ve bildirimler için</p>
+</div>
+<div class="shrink-0">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-6">
+<h2 class="px-4 pb-2 text-sm font-bold tracking-wider uppercase text-primary-light-text dark:text-primary-dark-text">GENEL</h2>
+<div class="overflow-hidden bg-surface-light dark:bg-surface-dark rounded-xl">
+<div class="flex items-center gap-4 px-4 py-3 min-h-[72px]">
+<div class="flex items-center justify-center shrink-0 size-10 bg-primary/10 dark:bg-primary/20 rounded-full text-primary-light-text dark:text-primary-dark-text">
+<span class="material-symbols-outlined">language</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium leading-normal text-text-light dark:text-text-dark">Dil</p>
+<p class="text-sm leading-normal text-text-secondary-light dark:text-text-secondary-dark">Türkçe</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

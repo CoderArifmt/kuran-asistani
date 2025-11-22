@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Namaz Vakitleri Takvimi</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#14b866",
+              "background-light": "#f6f8f7",
+              "background-dark": "#112119",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-screen w-full flex-col group/design-root overflow-x-hidden">
+<!-- Top App Bar -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-gray-200/10 dark:border-white/10">
+<button class="text-gray-800 dark:text-white flex size-10 items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center -ml-10">Takvim</h2>
+</div>
+<div class="flex-1 overflow-y-auto">
+<!-- Calendar Picker -->
+<div class="flex flex-wrap items-center justify-center gap-6 p-4 pt-6">
+<div class="flex w-full max-w-sm flex-col gap-0.5">
+<div class="flex items-center p-1 justify-between">
+<button class="text-gray-800 dark:text-white flex size-10 items-center justify-center rounded-full hover:bg-gray-500/10 active:bg-gray-500/20">
+<span class="material-symbols-outlined text-xl">chevron_left</span>
+</button>
+<p class="text-gray-900 dark:text-white text-base font-bold leading-tight flex-1 text-center">Aralık 2024</p>
+<button class="text-gray-800 dark:text-white flex size-10 items-center justify-center rounded-full hover:bg-gray-500/10 active:bg-gray-500/20">
+<span class="material-symbols-outlined text-xl">chevron_right</span>
+</button>
+</div>
+<div class="grid grid-cols-7 mt-2">
+<p class="text-gray-500 dark:text-gray-400 text-xs font-bold leading-normal tracking-wider flex h-12 w-full items-center justify-center pb-0.5">PZT</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-bold leading-normal tracking-wider flex h-12 w-full items-center justify-center pb-0.5">SAL</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-bold leading-normal tracking-wider flex h-12 w-full items-center justify-center pb-0.5">ÇAR</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-bold leading-normal tracking-wider flex h-12 w-full items-center justify-center pb-0.5">PER</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-bold leading-normal tracking-wider flex h-12 w-full items-center justify-center pb-0.5">CUM</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-bold leading-normal tracking-wider flex h-12 w-full items-center justify-center pb-0.5">CMT</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-bold leading-normal tracking-wider flex h-12 w-full items-center justify-center pb-0.5">PAZ</p>
+<button class="h-12 w-full text-gray-400 dark:text-gray-600 col-start-7 text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full">1</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">2</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">3</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">4</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">5</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">6</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">7</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">8</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">9</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">10</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">11</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">12</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">13</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">14</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">15</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">16</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">17</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">18</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">19</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal relative">
+<div class="flex size-full items-center justify-center rounded-full border border-primary">20</div>
+</button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">21</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">22</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">23</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">24</div></button>
+<button class="h-12 w-full text-white dark:text-background-dark text-sm font-bold leading-normal">
+<div class="flex size-full items-center justify-center rounded-full bg-primary">25</div>
+</button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">26</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">27</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">28</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">29</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">30</div></button>
+<button class="h-12 w-full text-gray-800 dark:text-white text-sm font-medium leading-normal"><div class="flex size-full items-center justify-center rounded-full hover:bg-gray-500/10">31</div></button>
+</div>
+</div>
+</div>
+<!-- Details Section -->
+<div class="px-4 pb-8">
+<!-- Headline Text -->
+<h3 class="text-gray-900 dark:text-white tracking-tight text-2xl font-bold leading-tight px-4 text-left pb-2 pt-5">25 Aralık 2024, Çarşamba</h3>
+<!-- Description List -->
+<div class="p-4 grid grid-cols-2 gap-x-2">
+<div class="flex flex-col gap-1 border-t border-solid border-gray-200 dark:border-white/20 py-4 pr-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">İmsak</p>
+<p class="text-gray-900 dark:text-white text-sm font-medium leading-normal">05:45</p>
+</div>
+<div class="flex flex-col gap-1 border-t border-solid border-gray-200 dark:border-white/20 py-4 pl-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Güneş</p>
+<p class="text-gray-900 dark:text-white text-sm font-medium leading-normal">07:15</p>
+</div>
+<div class="flex flex-col gap-1 border-t border-solid border-gray-200 dark:border-white/20 py-4 pr-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Öğle</p>
+<p class="text-gray-900 dark:text-white text-sm font-medium leading-normal">13:03</p>
+</div>
+<div class="flex flex-col gap-1 border-t border-solid border-gray-200 dark:border-white/20 py-4 pl-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">İkindi</p>
+<p class="text-gray-900 dark:text-white text-sm font-medium leading-normal">15:45</p>
+</div>
+<div class="flex flex-col gap-1 border-t border-solid border-gray-200 dark:border-white/20 py-4 pr-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Akşam</p>
+<p class="text-gray-900 dark:text-white text-sm font-medium leading-normal">17:48</p>
+</div>
+<div class="flex flex-col gap-1 border-t border-solid border-gray-200 dark:border-white/20 py-4 pl-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Yatsı</p>
+<p class="text-gray-900 dark:text-white text-sm font-medium leading-normal">19:10</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="flex gap-2 border-t border-gray-200 dark:border-white/10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm px-4 pb-3 pt-2 sticky bottom-0 z-10">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined flex h-8 items-center justify-center text-2xl">home</span>
+<p class="text-xs font-medium leading-normal tracking-wide">Anasayfa</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined flex h-8 items-center justify-center text-2xl">explore</span>
+<p class="text-xs font-medium leading-normal tracking-wide">Kıble</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined flex h-8 items-center justify-center text-2xl">book</span>
+<p class="text-xs font-medium leading-normal tracking-wide">Kur'an</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 rounded-full text-primary" href="#">
+<span class="material-symbols-outlined flex h-8 items-center justify-center text-2xl" style="font-variation-settings: 'FILL' 1;">more_horiz</span>
+<p class="text-xs font-medium leading-normal tracking-wide">Daha Fazla</p>
+</a>
+</div>
+</div>
+</body></html>

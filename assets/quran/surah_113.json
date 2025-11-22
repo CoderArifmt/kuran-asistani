@@ -1,0 +1,35 @@
+{
+  "surahNumber": 113,
+  "ayahs": [
+    {
+      "numberInSurah": 1,
+      "textAr": "قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ",
+      "textTr": "De ki: Sığınırım felâkın Rabbine.",
+      "number": 1
+    },
+    {
+      "numberInSurah": 2,
+      "textAr": "مِن شَرِّ مَا خَلَقَ",
+      "textTr": "Yarattığı şeylerin şerrinden.",
+      "number": 2
+    },
+    {
+      "numberInSurah": 3,
+      "textAr": "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+      "textTr": "Çöktüğü zaman karanlığın şerrinden.",
+      "number": 3
+    },
+    {
+      "numberInSurah": 4,
+      "textAr": "وَمِن شَرِّ ٱلنَّفّٰثَاتِ فِى ٱلْعُقَدِ",
+      "textTr": "Düğümlere üfleyen üfürükçülerin şerrinden.",
+      "number": 4
+    },
+    {
+      "numberInSurah": 5,
+      "textAr": "وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "textTr": "Ve haset ettiği zaman hasetçinin şerrinden.",
+      "number": 5
+    }
+  ]
+}

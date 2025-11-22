@@ -1,0 +1,34 @@
+[
+  {
+    "number": 1,
+    "name": "الفاتحة",
+    "englishName": "Al-Fatihah",
+    "turkishName": "Fâtiha",
+    "revelationType": "Meccan",
+    "ayahCount": 7
+  },
+  {
+    "number": 112,
+    "name": "الإخلاص",
+    "englishName": "Al-Ikhlas",
+    "turkishName": "İhlâs",
+    "revelationType": "Meccan",
+    "ayahCount": 4
+  },
+  {
+    "number": 113,
+    "name": "الفلق",
+    "englishName": "Al-Falaq",
+    "turkishName": "Felâk",
+    "revelationType": "Meccan",
+    "ayahCount": 5
+  },
+  {
+    "number": 114,
+    "name": "الناس",
+    "englishName": "An-Nas",
+    "turkishName": "Nâs",
+    "revelationType": "Meccan",
+    "ayahCount": 6
+  }
+]

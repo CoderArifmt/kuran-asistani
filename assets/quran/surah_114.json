@@ -1,0 +1,41 @@
+{
+  "surahNumber": 114,
+  "ayahs": [
+    {
+      "numberInSurah": 1,
+      "textAr": "قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ",
+      "textTr": "De ki: Sığınırım insanların Rabbine.",
+      "number": 1
+    },
+    {
+      "numberInSurah": 2,
+      "textAr": "مَلِكِ ٱلنَّاسِ",
+      "textTr": "İnsanların melikine (hükümdarına).",
+      "number": 2
+    },
+    {
+      "numberInSurah": 3,
+      "textAr": "إِلَٰهِ ٱلنَّاسِ",
+      "textTr": "İnsanların ilâhına.",
+      "number": 3
+    },
+    {
+      "numberInSurah": 4,
+      "textAr": "مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ",
+      "textTr": "Sinsice vesvese veren sinsi vesvesecinin şerrinden.",
+      "number": 4
+    },
+    {
+      "numberInSurah": 5,
+      "textAr": "ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ",
+      "textTr": "O ki insanların göğüslerine vesvese verir.",
+      "number": 5
+    },
+    {
+      "numberInSurah": 6,
+      "textAr": "مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ",
+      "textTr": "Gerek cinlerden, gerek insanlardan.",
+      "number": 6
+    }
+  ]
+}

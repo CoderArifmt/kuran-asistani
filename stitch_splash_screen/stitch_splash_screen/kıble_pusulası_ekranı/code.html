@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kıble Bulucu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#14b866",
+              "background-light": "#f6f8f7",
+              "background-dark": "#112119",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 24px; /* Default size */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative mx-auto flex h-screen max-w-sm flex-col overflow-hidden">
+<!-- Top App Bar -->
+<header class="flex shrink-0 items-center bg-background-light/80 dark:bg-background-dark/80 px-4 pt-4 pb-2 backdrop-blur-sm">
+<span class="material-symbols-outlined text-transparent">arrow_back</span>
+<h1 class="flex-1 text-center text-lg font-bold text-gray-800 dark:text-white">Kıble</h1>
+<span class="material-symbols-outlined text-transparent">more_vert</span>
+</header>
+<!-- Main Content -->
+<main class="flex flex-1 flex-col items-center justify-center p-4">
+<!-- Compass Component -->
+<div class="relative mb-8 flex aspect-square w-full max-w-xs items-center justify-center">
+<!-- Compass Outer Rings -->
+<div class="absolute h-full w-full rounded-full bg-gray-200/50 dark:bg-gray-800/40"></div>
+<div class="absolute h-[85%] w-[85%] rounded-full border border-gray-300 dark:border-gray-700"></div>
+<!-- Rotating Compass with Directions -->
+<div class="absolute h-full w-full animate-[spin_10s_linear_infinite] transition-transform duration-500 ease-in-out" style="transform: rotate(-45deg);">
+<span class="absolute left-1/2 top-2 -translate-x-1/2 text-lg font-bold text-primary">N</span>
+<span class="absolute right-2 top-1/2 -translate-y-1/2 text-lg font-bold text-gray-500 dark:text-gray-400">E</span>
+<span class="absolute bottom-2 left-1/2 -translate-x-1/2 text-lg font-bold text-gray-500 dark:text-gray-400">S</span>
+<span class="absolute left-2 top-1/2 -translate-y-1/2 text-lg font-bold text-gray-500 dark:text-gray-400">W</span>
+<!-- Degree markers -->
+<div class="absolute inset-0">
+<div class="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-gray-300 dark:bg-gray-600" style="transform: rotate(30deg); transform-origin: center 135px;"></div>
+<div class="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-gray-300 dark:bg-gray-600" style="transform: rotate(60deg); transform-origin: center 135px;"></div>
+<div class="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-gray-300 dark:bg-gray-600" style="transform: rotate(120deg); transform-origin: center 135px;"></div>
+<div class="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-gray-300 dark:bg-gray-600" style="transform: rotate(150deg); transform-origin: center 135px;"></div>
+<div class="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-gray-300 dark:bg-gray-600" style="transform: rotate(210deg); transform-origin: center 135px;"></div>
+<div class="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-gray-300 dark:bg-gray-600" style="transform: rotate(240deg); transform-origin: center 135px;"></div>
+<div class="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-gray-300 dark:bg-gray-600" style="transform: rotate(300deg); transform-origin: center 135px;"></div>
+<div class="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-gray-300 dark:bg-gray-600" style="transform: rotate(330deg); transform-origin: center 135px;"></div>
+</div>
+</div>
+<!-- Fixed Qibla Indicator (Kaaba Icon) -->
+<div class="absolute top-0 flex h-full w-full flex-col items-center pt-2" style="transform: rotate(135deg);">
+<div class="relative">
+<span class="material-symbols-outlined text-primary" style="font-size: 32px; font-variation-settings: 'FILL' 1;">mosque</span>
+<div class="absolute inset-0 -z-10 -m-2 rounded-full bg-primary/30 blur-lg"></div>
+</div>
+</div>
+<!-- Center Degree Text -->
+<div class="relative z-10 text-center">
+<p class="text-5xl font-bold tracking-tighter text-gray-800 dark:text-white">135°</p>
+<p class="text-sm text-gray-500 dark:text-gray-400">Kıble Yönü</p>
+</div>
+</div>
+<!-- Instructional Texts -->
+<div class="text-center">
+<p class="text-base font-normal text-gray-700 dark:text-gray-300">Cihazı yatay düzlemde tutun.</p>
+<p class="text-sm font-normal text-primary/80 dark:text-primary/70">Kalibrasyon için cihazı 8 şeklinde hareket ettirin.</p>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="flex shrink-0 gap-2 border-t border-gray-200 bg-background-light/80 px-4 pb-3 pt-2 backdrop-blur-sm dark:border-gray-800 dark:bg-background-dark/80">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-xs font-medium tracking-wide">Anasayfa</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 rounded-full text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<p class="text-xs font-medium tracking-wide">Kıble</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<p class="text-xs font-medium tracking-wide">Kur’an</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">more_horiz</span>
+<p class="text-xs font-medium tracking-wide">Daha Fazla</p>
+</a>
+</nav>
+</div>
+</body></html>

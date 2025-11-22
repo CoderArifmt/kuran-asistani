@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hatırlatıcılar Ekranı</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#14b866",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#112119",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 24px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<!-- Top App Bar -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10">
+<div class="flex size-12 shrink-0 items-center justify-start">
+<span class="material-symbols-outlined text-zinc-900 dark:text-white">arrow_back</span>
+</div>
+<h2 class="text-zinc-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Hatırlatıcılar</h2>
+<div class="flex size-12 shrink-0 items-center"></div> <!-- Spacer for centering title -->
+</div>
+<div class="flex flex-col gap-6 px-4 py-4">
+<!-- General Reminders Section -->
+<div>
+<h3 class="px-4 pb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Genel Hatırlatıcılar</h3>
+<div class="flex flex-col gap-2 rounded-xl bg-white/50 dark:bg-black/20 p-2">
+<!-- Cuma namazı hatırlatma -->
+<div class="flex min-h-14 items-center justify-between gap-4 rounded-lg p-2 hover:bg-black/5 dark:hover:bg-white/5">
+<div class="flex items-center gap-4">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">mosque</span>
+</div>
+<p class="flex-1 truncate text-base font-normal leading-normal text-zinc-900 dark:text-white">Cuma namazı hatırlatma</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-zinc-200 dark:bg-zinc-700 p-0.5 has-[:checked]:bg-primary">
+<input checked="" class="invisible absolute" type="checkbox"/>
+<div class="h-full w-[27px] rounded-full bg-white transition-transform duration-300 ease-in-out transform translate-x-[20px]" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+</label>
+</div>
+</div>
+<!-- Tesbihat hatırlatma -->
+<div class="flex min-h-14 items-center justify-between gap-4 rounded-lg p-2 hover:bg-black/5 dark:hover:bg-white/5">
+<div class="flex items-center gap-4">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">sound_detection_dog_barking</span>
+</div>
+<p class="flex-1 truncate text-base font-normal leading-normal text-zinc-900 dark:text-white">Tesbihat hatırlatma</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-zinc-200 dark:bg-zinc-700 p-0.5 has-[:checked]:bg-primary">
+<input class="invisible absolute" type="checkbox"/>
+<div class="h-full w-[27px] rounded-full bg-white transition-transform duration-300 ease-in-out transform translate-x-0" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+</label>
+</div>
+</div>
+<!-- Günlük Ayet Hatırlatma -->
+<div class="flex min-h-14 items-center justify-between gap-4 rounded-lg p-2 hover:bg-black/5 dark:hover:bg-white/5">
+<div class="flex items-center gap-4">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">menu_book</span>
+</div>
+<p class="flex-1 truncate text-base font-normal leading-normal text-zinc-900 dark:text-white">Günlük Ayet Hatırlatma</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-zinc-200 dark:bg-zinc-700 p-0.5 has-[:checked]:bg-primary">
+<input checked="" class="invisible absolute" type="checkbox"/>
+<div class="h-full w-[27px] rounded-full bg-white transition-transform duration-300 ease-in-out transform translate-x-[20px]" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+</label>
+</div>
+</div>
+<!-- Günlük Dua Hatırlatma -->
+<div class="flex min-h-14 items-center justify-between gap-4 rounded-lg p-2 hover:bg-black/5 dark:hover:bg-white/5">
+<div class="flex items-center gap-4">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">volunteer_activism</span>
+</div>
+<p class="flex-1 truncate text-base font-normal leading-normal text-zinc-900 dark:text-white">Günlük Dua Hatırlatma</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-zinc-200 dark:bg-zinc-700 p-0.5 has-[:checked]:bg-primary">
+<input class="invisible absolute" type="checkbox"/>
+<div class="h-full w-[27px] rounded-full bg-white transition-transform duration-300 ease-in-out transform translate-x-0" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Special Days Section -->
+<div>
+<h3 class="px-4 pb-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Özel Günler</h3>
+<div class="flex flex-col gap-2 rounded-xl bg-white/50 dark:bg-black/20 p-2">
+<!-- Ramazan Hatırlatmaları -->
+<div class="flex min-h-14 items-center justify-between gap-4 rounded-lg p-2 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">clear_night</span>
+</div>
+<div>
+<p class="text-base font-normal leading-normal text-zinc-900 dark:text-white">Ramazan Hatırlatmaları</p>
+<p class="text-sm font-normal text-zinc-500 dark:text-zinc-400">Sahur ve iftar için ayarlar</p>
+</div>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-zinc-500 dark:text-zinc-400">chevron_right</span>
+</div>
+</div>
+<!-- Kandil Gecesi Bildirimleri -->
+<div class="flex min-h-14 items-center justify-between gap-4 rounded-lg p-2 hover:bg-black/5 dark:hover:bg-white/5">
+<div class="flex items-center gap-4">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">flare</span>
+</div>
+<p class="flex-1 truncate text-base font-normal leading-normal text-zinc-900 dark:text-white">Kandil Gecesi Bildirimleri</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-zinc-200 dark:bg-zinc-700 p-0.5 has-[:checked]:bg-primary">
+<input checked="" class="invisible absolute" type="checkbox"/>
+<div class="h-full w-[27px] rounded-full bg-white transition-transform duration-300 ease-in-out transform translate-x-[20px]" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<style>
+    /* Simple state change for toggle switch */
+    input:checked ~ div {
+        transform: translateX(20px);
+    }
+</style>
+</body></html>

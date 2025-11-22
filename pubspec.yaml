@@ -1,0 +1,54 @@
+name: namaz_kuran_asistani
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
+  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^2.5.0
+  http: ^1.2.0
+  geolocator: ^13.0.0
+  geocoding: ^2.1.0
+  flutter_local_notifications: ^17.2.0
+  timezone: ^0.9.4
+  shared_preferences: ^2.3.0
+  flutter_compass: ^0.8.0
+  just_audio: ^0.10.5
+  url_launcher: ^6.3.0
+  flutter_map: ^7.0.0
+  latlong2: ^0.9.0
+  package_info_plus: ^8.0.0
+  permission_handler: ^11.0.1
+  android_alarm_manager_plus: ^5.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+# 👇 ESKİ BLOK (flutter_icons) SİLİNDİ, YENİSİ EKLENDİ
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/icon.png"
+  remove_alpha_ios: true
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/quran/surahs.json
+    - assets/quran/surah_1.json
+    - assets/audio/azan.mp3
+    - assets/prayer_guide/

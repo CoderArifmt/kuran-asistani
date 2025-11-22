@@ -1,0 +1,29 @@
+{
+  "surahNumber": 112,
+  "ayahs": [
+    {
+      "numberInSurah": 1,
+      "textAr": "قُلْ هُوَ ٱللَّهُ أَحَدٌ",
+      "textTr": "De ki: O Allah tektir.",
+      "number": 1
+    },
+    {
+      "numberInSurah": 2,
+      "textAr": "ٱللَّهُ ٱلصَّمَدُ",
+      "textTr": "Allah Samed’dir (her şey O’na muhtaçtır, O hiçbir şeye muhtaç değildir).",
+      "number": 2
+    },
+    {
+      "numberInSurah": 3,
+      "textAr": "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+      "textTr": "Doğurmamış ve doğurulmamıştır.",
+      "number": 3
+    },
+    {
+      "numberInSurah": 4,
+      "textAr": "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌ",
+      "textTr": "Ve hiçbir şey O’nun dengi olmamıştır.",
+      "number": 4
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Prayer Times Pro Splash Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#19e680",
+            "background-light": "#f6f8f7",
+            "background-dark": "#112119",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 1,
+      'wght' 300,
+      'GRAD' 0,
+      'opsz' 48
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+<div class="flex flex-1 flex-col items-center justify-center text-center">
+<div class="w-24 h-24 mb-6 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-size: 96px;">
+          mosque
+        </span>
+</div>
+<h1 class="text-3xl font-bold tracking-tight text-slate-800 dark:text-white">Namaz ve Kur'an Asistanı</h1>
+</div>
+<div class="w-full p-6 flex flex-col items-center">
+<div class="w-8 h-8 mb-4">
+<div class="w-full h-full rounded-full border-2 border-primary/20 border-t-primary animate-spin"></div>
+</div>
+<p class="text-sm font-normal text-slate-500 dark:text-[#93c8ad]">v1.0.0</p>
+</div>
+</div>
+
+</body></html>

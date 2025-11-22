@@ -1,0 +1,29 @@
+<svg width="1024" height="1024" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .primary { fill: #4CAF50; }
+      .secondary { fill: #388E3C; }
+    </style>
+  </defs>
+
+  <!-- Minare -->
+  <rect x="18" y="28" width="10" height="64" rx="3" class="secondary"/>
+  <!-- Minare tepesi (küçük kubbe) -->
+  <path d="M23 18C19 18 18 22 18 24V28H28V24C28 22 27 18 23 18Z" class="secondary"/>
+
+  <!-- Cami gövdesi -->
+  <rect x="32" y="44" width="72" height="52" rx="6" class="primary"/>
+
+  <!-- Kubbe -->
+  <path d="M68 24C54 24 46 34 46 44V48H90V44C90 34 82 24 68 24Z" class="primary"/>
+
+  <!-- Kubbe konturu -->
+  <path d="M46 44C46 34 54 24 68 24C82 24 90 34 90 44" fill="none" stroke="#388E3C" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Kapı -->
+  <rect x="60" y="60" width="16" height="24" rx="4" fill="#FFFFFF" opacity="0.9"/>
+
+  <!-- Pencereler -->
+  <rect x="40" y="60" width="8" height="12" rx="3" fill="#FFFFFF" opacity="0.8"/>
+  <rect x="88" y="60" width="8" height="12" rx="3" fill="#FFFFFF" opacity="0.8"/>
+</svg>

@@ -1,0 +1,17 @@
+{
+  "surahNumber": 1,
+  "ayahs": [
+    {
+      "numberInSurah": 1,
+      "textAr": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+      "textTr": "Rahmân ve Rahîm olan Allah’ın adıyla.",
+      "number": 1
+    },
+    {
+      "numberInSurah": 2,
+      "textAr": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+      "textTr": "Hamd, âlemlerin Rabbi Allah’a mahsustur.",
+      "number": 2
+    }
+  ]
+}

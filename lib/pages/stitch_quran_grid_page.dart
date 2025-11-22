@@ -1,0 +1,724 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
+
+import '../providers/app_providers.dart';
+import 'surah_detail_page.dart';
+import 'dua_detail_page.dart';
+
+// Surenin Türkçe isimleri (numaraya göre)
+const Map<int, String> _surahTurkishNames = {
+  1: 'Fâtiha',
+  2: 'Bakara',
+  3: 'Âl-i İmrân',
+  4: 'Nisâ',
+  5: 'Mâide',
+  6: 'En\'âm',
+  7: 'A\'râf',
+  8: 'Enfâl',
+  9: 'Tevbe',
+  10: 'Yûnus',
+  11: 'Hûd',
+  12: 'Yûsuf',
+  13: 'Ra\'d',
+  14: 'İbrâhîm',
+  15: 'Hicr',
+  16: 'Nahl',
+  17: 'İsrâ',
+  18: 'Kehf',
+  19: 'Meryem',
+  20: 'Tâhâ',
+  21: 'Enbiyâ',
+  22: 'Hacc',
+  23: 'Mü\'minûn',
+  24: 'Nûr',
+  25: 'Furkân',
+  26: 'Şuarâ',
+  27: 'Neml',
+  28: 'Kasas',
+  29: 'Ankebût',
+  30: 'Rûm',
+  31: 'Lokmân',
+  32: 'Secde',
+  33: 'Ahzâb',
+  34: 'Sebe\'',
+  35: 'Fâtır',
+  36: 'Yâsîn',
+  37: 'Sâffât',
+  38: 'Sâd',
+  39: 'Zümer',
+  40: 'Mü\'min (Ğâfir)',
+  41: 'Fussilet',
+  42: 'Şûrâ',
+  43: 'Zuhruf',
+  44: 'Duhân',
+  45: 'Câsiye',
+  46: 'Ahkâf',
+  47: 'Muhammed',
+  48: 'Fetih',
+  49: 'Hucurât',
+  50: 'Kaf',
+  51: 'Zâriyât',
+  52: 'Tûr',
+  53: 'Necm',
+  54: 'Kamer',
+  55: 'Rahmân',
+  56: 'Vâkıa',
+  57: 'Hadîd',
+  58: 'Mücâdele',
+  59: 'Haşr',
+  60: 'Mümtehine',
+  61: 'Saff',
+  62: 'Cum\'a',
+  63: 'Münâfikûn',
+  64: 'Tegâbün',
+  65: 'Talâk',
+  66: 'Tahrîm',
+  67: 'Mülk',
+  68: 'Kalem',
+  69: 'Hâkka',
+  70: 'Meâric',
+  71: 'Nûh',
+  72: 'Cin',
+  73: 'Müzzemmil',
+  74: 'Müddessir',
+  75: 'Kıyâme',
+  76: 'İnsan',
+  77: 'Mürselât',
+  78: 'Nebe\'',
+  79: 'Nâziât',
+  80: 'Abese',
+  81: 'Tekvîr',
+  82: 'İnfitâr',
+  83: 'Mutaffifîn',
+  84: 'İnşikak',
+  85: 'Bürûc',
+  86: 'Târık',
+  87: 'A\'lâ',
+  88: 'Gâşiye',
+  89: 'Fecr',
+  90: 'Beled',
+  91: 'Şems',
+  92: 'Leyl',
+  93: 'Duha',
+  94: 'İnşirâh (Şerh)',
+  95: 'Tîn',
+  96: 'Alak',
+  97: 'Kadr',
+  98: 'Beyyine',
+  99: 'Zilzâl',
+  100: 'Âdiyât',
+  101: 'Kâria',
+  102: 'Tekâsür',
+  103: 'Asr',
+  104: 'Hümeze',
+  105: 'Fîl',
+  106: 'Kureyş',
+  107: 'Mâûn',
+  108: 'Kevser',
+  109: 'Kâfirûn',
+  110: 'Nasr',
+  111: 'Tebbet (Mesed)',
+  112: 'İhlâs',
+  113: 'Felâk',
+  114: 'Nâs',
+};
+
+class DuaItem {
+  final String id;
+  final String title;
+  final String subtitle;
+  final String audioUrl;
+  final Color bgLight;
+  final Color bgDark;
+
+  const DuaItem({
+    required this.id,
+    required this.title,
+    required this.subtitle,
+    required this.audioUrl,
+    required this.bgLight,
+    required this.bgDark,
+  });
+}
+
+/// Temel dua kartları için kullanılan listeyi dışarı da aç.
+const List<DuaItem> allDuaItems = _duaItems;
+
+// Temel dualar listesi
+const List<DuaItem> _duaItems = [
+  DuaItem(
+    id: 'subhaneke',
+    title: 'Sübhaneke Duası',
+    subtitle: 'Namazın başlangıcında okunur',
+    audioUrl: 'https://www.islamcan.com/audio/duas/subhaneke.mp3',
+    bgLight: Color(0xFFCFE8FA),
+    bgDark: Color(0xFF2A5470),
+  ),
+  DuaItem(
+    id: 'tahiyyat',
+    title: 'Tahiyyat (Ettahiyyâtü)',
+    subtitle: 'Namazların oturuşlarında okunur',
+    audioUrl: 'https://www.islamcan.com/audio/duas/tahiyyat.mp3',
+    bgLight: Color(0xFFD6F7D0),
+    bgDark: Color(0xFF36702A),
+  ),
+  DuaItem(
+    id: 'salli_barik',
+    title: 'Salli Barik Duaları',
+    subtitle: 'Namazların son oturuşunda okunur',
+    audioUrl: 'https://www.islamcan.com/audio/duas/allahumma-salli.mp3',
+    bgLight: Color(0xFFFFF6D9),
+    bgDark: Color(0xFF70612A),
+  ),
+  DuaItem(
+    id: 'barik',
+    title: 'Barik Duası',
+    subtitle: 'Namazların son oturuşunda okunur',
+    audioUrl: 'https://www.islamcan.com/audio/duas/allahumma-barik.mp3',
+    bgLight: Color(0xFFFFFDE7),
+    bgDark: Color(0xFF795548),
+  ),
+  DuaItem(
+    id: 'rabbena',
+    title: 'Rabbena Duaları',
+    subtitle: 'Her türlü dilek için okunur',
+    audioUrl: 'https://www.islamcan.com/audio/duas/rabbana-atina.mp3',
+    bgLight: Color(0xFFFCE0E8),
+    bgDark: Color(0xFF702A43),
+  ),
+  DuaItem(
+    id: 'ayetelkursi',
+    title: 'Âyetel Kürsî',
+    subtitle: 'Korunma ve bereket için okunur',
+    audioUrl: 'https://GERCEK-URL/ayetel_kursi.mp3',
+    bgLight: Color(0xFFE0F2FE),
+    bgDark: Color(0xFF1D4ED8),
+  ),
+  DuaItem(
+    id: 'rabbi_yessir',
+    title: 'Rabbi Yessir Duası',
+    subtitle: 'İşlere başlarken kolaylık için',
+    audioUrl: 'https://GERCEK-URL/rabbi_yessir.mp3',
+    bgLight: Color(0xFFE0F7FA),
+    bgDark: Color(0xFF006064),
+  ),
+  DuaItem(
+    id: 'seyyidul_istigfar',
+    title: 'Seyyidü\'l İstiğfar',
+    subtitle: 'En faziletli istiğfar duası',
+    audioUrl: 'https://GERCEK-URL/seyyidul_istigfar.mp3',
+    bgLight: Color(0xFFF1F5F9),
+    bgDark: Color(0xFF0F172A),
+  ),
+  DuaItem(
+    id: 'hasbunallah',
+    title: 'Hasbünâllâhu',
+    subtitle: 'Sıkıntılı anlarda tevekkül için',
+    audioUrl: 'https://GERCEK-URL/hasbunallah.mp3',
+    bgLight: Color(0xFFFEE2E2),
+    bgDark: Color(0xFFB91C1C),
+  ),
+  DuaItem(
+    id: 'kunut1',
+    title: 'Kunut Duası 1',
+    subtitle: 'Vitir namazı duası',
+    audioUrl: 'https://www.islamcan.com/audio/duas/qunoot-1.mp3',
+    bgLight: Color(0xFFE0F7FA),
+    bgDark: Color(0xFF006064),
+  ),
+  DuaItem(
+    id: 'kunut2',
+    title: 'Kunut Duası 2',
+    subtitle: 'Vitir namazı duası',
+    audioUrl: 'https://www.islamcan.com/audio/duas/qunoot-2.mp3',
+    bgLight: Color(0xFFE5E7EB),
+    bgDark: Color(0xFF374151),
+  ),
+  DuaItem(
+    id: 'yemek',
+    title: 'Yemek Duası',
+    subtitle: 'Yemekten sonra okunur',
+    audioUrl: 'https://www.islamcan.com/audio/duas/meal-prayer.mp3',
+    bgLight: Color(0xFFE0F2FE),
+    bgDark: Color(0xFF1D4ED8),
+  ),
+];
+
+class StitchQuranDuaPageGrid extends ConsumerStatefulWidget {
+  const StitchQuranDuaPageGrid({super.key});
+
+  @override
+  ConsumerState<StitchQuranDuaPageGrid> createState() =>
+      _StitchQuranDuaPageGridState();
+}
+
+class _StitchQuranDuaPageGridState
+    extends ConsumerState<StitchQuranDuaPageGrid> {
+  String _searchQuery = '';
+  int _selectedTab = 0; // 0: Sureler, 1: Dualar
+
+  final AudioPlayer _duaPlayer = AudioPlayer();
+  String? _currentDuaId;
+  bool _isDuaLoading = false;
+
+  @override
+  void dispose() {
+    _duaPlayer.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onDuaPressed(DuaItem dua) async {
+    if (_currentDuaId == dua.id && _duaPlayer.playing) {
+      try {
+        await _duaPlayer.stop();
+      } catch (e) {
+        debugPrint('Dua stop error: $e');
+      }
+      if (mounted) setState(() {});
+      return;
+    }
+
+    setState(() {
+      _currentDuaId = dua.id;
+      _isDuaLoading = true;
+    });
+
+    try {
+      await _duaPlayer.stop();
+      await _duaPlayer.setUrl(dua.audioUrl);
+      await _duaPlayer.play();
+    } catch (e) {
+      debugPrint('Dua play error: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDuaLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final asyncSurahs = ref.watch(surahListProvider);
+
+    return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar.large(
+              title: const Text("Kur'an & Dualar"),
+              centerTitle: false,
+              scrolledUnderElevation: 0,
+              backgroundColor: theme.scaffoldBackgroundColor,
+              surfaceTintColor: Colors.transparent,
+              actions: [
+                IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+              ],
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    // Search Bar
+                    SearchBar(
+                      hintText: _selectedTab == 0
+                          ? 'Sure ara...'
+                          : 'Dua ara...',
+                      elevation: WidgetStateProperty.all(0),
+                      backgroundColor: WidgetStateProperty.all(
+                        theme.cardTheme.color ?? cs.surface,
+                      ),
+                      padding: WidgetStateProperty.all(
+                        const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      leading: Icon(Icons.search, color: cs.onSurfaceVariant),
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value.trim();
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    // Segmented Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: SegmentedButton<int>(
+                        segments: const [
+                          ButtonSegment(
+                            value: 0,
+                            label: Text('Sureler'),
+                            icon: Icon(Icons.menu_book_outlined),
+                          ),
+                          ButtonSegment(
+                            value: 1,
+                            label: Text('Dualar'),
+                            icon: Icon(Icons.volunteer_activism_outlined),
+                          ),
+                        ],
+                        selected: {_selectedTab},
+                        onSelectionChanged: (Set<int> newSelection) {
+                          setState(() {
+                            _selectedTab = newSelection.first;
+                          });
+                        },
+                        style: ButtonStyle(
+                          visualDensity: VisualDensity.comfortable,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          side: WidgetStateProperty.all(BorderSide.none),
+                          backgroundColor:
+                              WidgetStateProperty.resolveWith<Color>((states) {
+                                if (states.contains(WidgetState.selected)) {
+                                  return cs.primaryContainer;
+                                }
+                                return theme.cardTheme.color ?? cs.surface;
+                              }),
+                          foregroundColor:
+                              WidgetStateProperty.resolveWith<Color>((states) {
+                                if (states.contains(WidgetState.selected)) {
+                                  return cs.onPrimaryContainer;
+                                }
+                                return cs.onSurfaceVariant;
+                              }),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            ),
+          ];
+        },
+        body: asyncSurahs.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => Center(child: Text('Hata: $e')),
+          data: (surahs) {
+            final query = _searchQuery.toLowerCase();
+
+            final filteredSurahs = query.isEmpty
+                ? surahs
+                : surahs.where((s) {
+                    final tr = (_surahTurkishNames[s.number] ?? '')
+                        .toLowerCase();
+                    return s.name.toLowerCase().contains(query) ||
+                        s.englishName.toLowerCase().contains(query) ||
+                        tr.contains(query) ||
+                        s.number.toString() == query;
+                  }).toList();
+
+            final filteredDuas = query.isEmpty
+                ? _duaItems
+                : _duaItems
+                      .where((d) => d.title.toLowerCase().contains(query))
+                      .toList();
+
+            if (_selectedTab == 0) {
+              if (filteredSurahs.isEmpty) {
+                return const Center(child: Text('Sonuç bulunamadı'));
+              }
+              return ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+                itemCount: filteredSurahs.length,
+                itemBuilder: (context, index) {
+                  final s = filteredSurahs[index];
+                  final trName = _surahTurkishNames[s.number] ?? s.englishName;
+                  final favAsync = ref.watch(favoriteSurahNumbersProvider);
+                  final isFavorite =
+                      favAsync.value?.contains(s.number) ?? false;
+
+                  return _M3SurahCard(
+                    number: s.number,
+                    arabicName: s.name,
+                    turkishName: trName,
+                    englishName: s.englishName,
+                    ayahCount: s.ayahCount,
+                    revelationType: s.revelationType,
+                    isFavorite: isFavorite,
+                    onToggleFavorite: () async {
+                      final service = ref.read(favoritesServiceProvider);
+                      await service.toggleFavoriteSurah(s.number);
+                      ref.invalidate(favoriteSurahNumbersProvider);
+                    },
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => SurahDetailPage(
+                            surahNumber: s.number,
+                            surahNameTr: trName,
+                            surahNameAr: s.name,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            } else {
+              if (filteredDuas.isEmpty) {
+                return const Center(child: Text('Sonuç bulunamadı'));
+              }
+              return ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+                itemCount: filteredDuas.length,
+                itemBuilder: (context, index) {
+                  final dua = filteredDuas[index];
+                  final isCurrent = _currentDuaId == dua.id;
+                  final isPlaying = isCurrent && _duaPlayer.playing;
+                  final isLoading = isCurrent && _isDuaLoading;
+                  final favAsync = ref.watch(favoriteDuaIdsProvider);
+                  final isFavorite = favAsync.value?.contains(dua.id) ?? false;
+
+                  return _M3DuaCard(
+                    item: dua,
+                    isCurrent: isCurrent,
+                    isPlaying: isPlaying,
+                    isLoading: isLoading,
+                    isFavorite: isFavorite,
+                    onToggleFavorite: () async {
+                      final service = ref.read(favoritesServiceProvider);
+                      await service.toggleFavoriteDua(dua.id);
+                      ref.invalidate(favoriteDuaIdsProvider);
+                    },
+                    onPlayPause: () => _onDuaPressed(dua),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => DuaDetailPage(
+                            duaId: dua.id,
+                            title: dua.title,
+                            subtitle: dua.subtitle,
+                            audioUrl: dua.audioUrl,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _M3SurahCard extends StatelessWidget {
+  final int number;
+  final String arabicName;
+  final String turkishName;
+  final String englishName;
+  final int ayahCount;
+  final String revelationType;
+  final bool isFavorite;
+  final VoidCallback onToggleFavorite;
+  final VoidCallback onTap;
+
+  const _M3SurahCard({
+    required this.number,
+    required this.arabicName,
+    required this.turkishName,
+    required this.englishName,
+    required this.ayahCount,
+    required this.revelationType,
+    required this.isFavorite,
+    required this.onToggleFavorite,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final revTr = revelationType.toLowerCase() == 'meccan' ? 'Mekke' : 'Medine';
+
+    return Card(
+      elevation: 0,
+      color: theme.cardTheme.color,
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              // Number Badge
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: cs.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    number.toString(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: cs.primary,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              // Info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          turkishName,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          arabicName,
+                          style: const TextStyle(
+                            fontFamily: 'Amiri',
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '$englishName • $revTr • $ayahCount Ayet',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              IconButton(
+                icon: Icon(
+                  isFavorite ? Icons.star : Icons.star_border,
+                  color: isFavorite
+                      ? const Color(0xFFF59E0B)
+                      : cs.onSurfaceVariant,
+                ),
+                onPressed: onToggleFavorite,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _M3DuaCard extends StatelessWidget {
+  final DuaItem item;
+  final bool isCurrent;
+  final bool isPlaying;
+  final bool isLoading;
+  final bool isFavorite;
+  final VoidCallback onToggleFavorite;
+  final VoidCallback onPlayPause;
+  final VoidCallback onTap;
+
+  const _M3DuaCard({
+    required this.item,
+    required this.isCurrent,
+    required this.isPlaying,
+    required this.isLoading,
+    required this.isFavorite,
+    required this.onToggleFavorite,
+    required this.onPlayPause,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+
+    return Card(
+      elevation: 0,
+      color: theme.cardTheme.color,
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: cs.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(Icons.volunteer_activism, color: cs.primary),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.title,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      item.subtitle,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: Icon(
+                  isFavorite ? Icons.star : Icons.star_border,
+                  color: isFavorite
+                      ? const Color(0xFFF59E0B)
+                      : cs.onSurfaceVariant,
+                ),
+                onPressed: onToggleFavorite,
+              ),
+              IconButton.filledTonal(
+                onPressed: onPlayPause,
+                style: IconButton.styleFrom(
+                  backgroundColor: cs.primary,
+                  foregroundColor: cs.onPrimary,
+                ),
+                icon: isLoading
+                    ? SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: cs.onPrimary,
+                        ),
+                      )
+                    : Icon(
+                        isCurrent && isPlaying ? Icons.pause : Icons.play_arrow,
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

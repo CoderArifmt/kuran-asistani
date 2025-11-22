@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kur'an &amp; Dualar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#14b866",
+              "background-light": "#f6f8f7",
+              "background-dark": "#112119",
+              "surface-light": "#ffffff",
+              "surface-dark": "#182c22",
+              "text-primary-light": "#1C1C1E",
+              "text-primary-dark": "#E1E1E1",
+              "text-secondary-light": "#8A8A8E",
+              "text-secondary-dark": "#93c8ad",
+              "border-light": "#E0E0E0",
+              "border-dark": "#244736",
+              // Pastel colors for Temel Dualar
+              "pastel-blue": "#cfe8fa",
+              "pastel-green": "#d6f7d0",
+              "pastel-yellow": "#fff6d9",
+              "pastel-pink": "#fce0e8",
+              "pastel-purple": "#e3e0fa",
+              "dark-pastel-blue": "#2a5470",
+              "dark-pastel-green": "#36702a",
+              "dark-pastel-yellow": "#70612a",
+              "dark-pastel-pink": "#702a43",
+              "dark-pastel-purple": "#4a2a70"
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "0.5rem",
+              "lg": "0.75rem",
+              "xl": "1rem",
+              "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+<style type="text/tailwindcss">
+    body {
+      min-height: max(884px, 100dvh);
+    }.pattern-1 {
+      background-image: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="pattern-1-light" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="%23e0e0e0"/></pattern><pattern id="pattern-1-dark" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="%23244736"/></pattern></defs><rect x="0" y="0" width="100%" height="100%" fill="url(%23pattern-1-light)" class="dark:hidden"/><rect x="0" y="0" width="100%" height="100%" fill="url(%23pattern-1-dark)" class="hidden dark:block"/></svg>');
+      background-size: 15% auto;
+      background-position: center;
+    }
+    .pattern-2 {
+      background-image: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="pattern-2-light" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="10" height="10" fill="%23e0e0e0"/><rect x="10" y="10" width="10" height="10" fill="%23e0e0e0"/></pattern><pattern id="pattern-2-dark" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="10" height="10" fill="%23244736"/><rect x="10" y="10" width="10" height="10" fill="%23244736"/></pattern></defs><rect x="0" y="0" width="100%" height="100%" fill="url(%23pattern-2-light)" class="dark:hidden"/><rect x="0" y="0" width="100%" height="100%" fill="url(%23pattern-2-dark)" class="hidden dark:block"/></svg>');
+      background-size: 15% auto;
+      background-position: center;
+    }
+    .pattern-3 {
+      background-image: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="pattern-3-light" x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse"><path d="M0 7.5L7.5 0L15 7.5L7.5 15Z" fill="%23e0e0e0"/></pattern><pattern id="pattern-3-dark" x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse"><path d="M0 7.5L7.5 0L15 7.5L7.5 15Z" fill="%23244736"/></pattern></defs><rect x="0" y="0" width="100%" height="100%" fill="url(%23pattern-3-light)" class="dark:hidden"/><rect x="0" y="0" width="100%" height="100%" fill="url(%23pattern-3-dark)" class="hidden dark:block"/></svg>');
+      background-size: 15% auto;
+      background-position: center;
+    }
+    .pattern-4 {
+      background-image: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="pattern-4-light" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M6 0L0 6L6 12L12 6Z" fill="%23e0e0e0"/></pattern><pattern id="pattern-4-dark" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M6 0L0 6L6 12L12 6Z" fill="%23244736"/></pattern></defs><rect x="0" y="0" width="100%" height="100%" fill="url(%23pattern-4-light)" class="dark:hidden"/><rect x="0" y="0" width="100%" height="100%" fill="url(%23pattern-4-dark)" class="hidden dark:block"/></svg>');
+      background-size: 15% auto;
+      background-position: center;
+    }
+    .pattern-5 {
+      background-image: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="pattern-5-light" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M0 5L5 0V5L0 10Z" fill="%23e0e0e0"/></pattern><pattern id="pattern-5-dark" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M0 5L5 0V5L0 10Z" fill="%23244736"/></pattern></defs><rect x="0" y="0" width="100%" height="100%" fill="url(%23pattern-5-light)" class="dark:hidden"/><rect x="0" y="0" width="100%" height="100%" fill="url(%23pattern-5-dark)" class="hidden dark:block"/></svg>');
+      background-size: 15% auto;
+      background-position: center;
+    }
+    .pattern-6 {
+      background-image: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="pattern-6-light" x="0" y="0" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M9 0L0 9L9 18L18 9Z" fill="%23e0e0e0"/></pattern><pattern id="pattern-6-dark" x="0" y="0" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M9 0L0 9L9 18L18 9Z" fill="%23244736"/></pattern></defs><rect x="0" y="0" width="100%" height="100%" fill="url(%23pattern-6-light)" class="dark:hidden"/><rect x="0" y="0" width="100%" height="100%" fill="url(%23pattern-6-dark)" class="hidden dark:block"/></svg>');
+      background-size: 15% auto;
+      background-position: center;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="mx-auto max-w-md">
+<div class="relative flex min-h-screen w-full flex-col">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="flex h-16 items-center px-4">
+<div class="flex size-12 shrink-0 items-center justify-start">
+</div>
+<h1 class="flex-1 text-center text-lg font-bold text-text-primary-light dark:text-text-primary-dark">Kur'an &amp; Dualar</h1>
+<div class="flex w-12 items-center justify-end">
+<button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-text-primary-light dark:text-text-primary-dark">
+<span class="material-symbols-outlined text-2xl">
+                                more_vert
+                            </span>
+</button>
+</div>
+</div>
+<div class="px-4 pb-4 pt-1">
+<label class="flex h-12 w-full min-w-40 flex-col">
+<div class="flex h-full w-full flex-1 items-stretch rounded-lg">
+<div class="flex items-center justify-center rounded-l-lg border-y border-l border-border-light bg-surface-light pl-4 text-text-secondary-light dark:border-border-dark dark:bg-surface-dark dark:text-text-secondary-dark">
+<span class="material-symbols-outlined text-2xl">
+                                    search
+                                </span>
+</div>
+<input class="form-input h-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg border-y border-r border-border-light bg-surface-light px-4 pl-2 text-base font-normal leading-normal text-text-primary-light placeholder:text-text-secondary-light focus:outline-0 focus:ring-2 focus:ring-primary/50 dark:border-border-dark dark:bg-surface-dark dark:text-text-primary-dark dark:placeholder:text-text-secondary-dark" placeholder="Sure veya dua ara..." value=""/>
+</div>
+</label>
+</div>
+</header>
+<main class="flex-grow px-4 pb-28 pt-2">
+<div>
+<h2 class="pb-3 pt-4 text-[22px] font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">Sureler</h2>
+<div class="grid grid-cols-2 gap-3">
+<a class="flex h-36 flex-col justify-between cursor-pointer rounded-lg bg-surface-light p-3 transition-colors hover:bg-black/5 dark:bg-surface-dark dark:hover:bg-white/5 pattern-1 overflow-hidden relative" href="#">
+<div class="absolute inset-0 bg-surface-light/80 dark:bg-surface-dark/80 rounded-lg"></div>
+<div class="relative z-[1] flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">
+            menu_book
+        </span>
+</div>
+<div class="relative z-[1] flex-1 flex flex-col justify-end">
+<p class="text-base font-medium text-text-primary-light dark:text-text-primary-dark line-clamp-1">Fatiha Suresi</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark line-clamp-1">Mekke, 7 ayet</p>
+</div>
+</a>
+<a class="flex h-36 flex-col justify-between cursor-pointer rounded-lg bg-surface-light p-3 transition-colors hover:bg-black/5 dark:bg-surface-dark dark:hover:bg-white/5 pattern-2 overflow-hidden relative" href="#">
+<div class="absolute inset-0 bg-surface-light/80 dark:bg-surface-dark/80 rounded-lg"></div>
+<div class="relative z-[1] flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">
+            menu_book
+        </span>
+</div>
+<div class="relative z-[1] flex-1 flex flex-col justify-end">
+<p class="text-base font-medium text-text-primary-light dark:text-text-primary-dark line-clamp-1">Bakara Suresi</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark line-clamp-1">Medine, 286 ayet</p>
+</div>
+</a>
+<a class="flex h-36 flex-col justify-between cursor-pointer rounded-lg bg-surface-light p-3 transition-colors hover:bg-black/5 dark:bg-surface-dark dark:hover:bg-white/5 pattern-3 overflow-hidden relative" href="#">
+<div class="absolute inset-0 bg-surface-light/80 dark:bg-surface-dark/80 rounded-lg"></div>
+<div class="relative z-[1] flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">
+            menu_book
+        </span>
+</div>
+<div class="relative z-[1] flex-1 flex flex-col justify-end">
+<p class="text-base font-medium text-text-primary-light dark:text-text-primary-dark line-clamp-1">Âl-i İmrân Suresi</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark line-clamp-1">Medine, 200 ayet</p>
+</div>
+</a>
+<a class="flex h-36 flex-col justify-between cursor-pointer rounded-lg bg-surface-light p-3 transition-colors hover:bg-black/5 dark:bg-surface-dark dark:hover:bg-white/5 pattern-4 overflow-hidden relative" href="#">
+<div class="absolute inset-0 bg-surface-light/80 dark:bg-surface-dark/80 rounded-lg"></div>
+<div class="relative z-[1] flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">
+            menu_book
+        </span>
+</div>
+<div class="relative z-[1] flex-1 flex flex-col justify-end">
+<p class="text-base font-medium text-text-primary-light dark:text-text-primary-dark line-clamp-1">Nisâ Suresi</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark line-clamp-1">Medine, 176 ayet</p>
+</div>
+</a>
+<a class="flex h-36 flex-col justify-between cursor-pointer rounded-lg bg-surface-light p-3 transition-colors hover:bg-black/5 dark:bg-surface-dark dark:hover:bg-white/5 pattern-5 overflow-hidden relative" href="#">
+<div class="absolute inset-0 bg-surface-light/80 dark:bg-surface-dark/80 rounded-lg"></div>
+<div class="relative z-[1] flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">
+            menu_book
+        </span>
+</div>
+<div class="relative z-[1] flex-1 flex flex-col justify-end">
+<p class="text-base font-medium text-text-primary-light dark:text-text-primary-dark line-clamp-1">Mâide Suresi</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark line-clamp-1">Medine, 120 ayet</p>
+</div>
+</a>
+<a class="flex h-36 flex-col justify-between cursor-pointer rounded-lg bg-surface-light p-3 transition-colors hover:bg-black/5 dark:bg-surface-dark dark:hover:bg-white/5 pattern-6 overflow-hidden relative" href="#">
+<div class="absolute inset-0 bg-surface-light/80 dark:bg-surface-dark/80 rounded-lg"></div>
+<div class="relative z-[1] flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">
+            menu_book
+        </span>
+</div>
+<div class="relative z-[1] flex-1 flex flex-col justify-end">
+<p class="text-base font-medium text-text-primary-light dark:text-text-primary-dark line-clamp-1">En'âm Suresi</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark line-clamp-1">Mekke, 165 ayet</p>
+</div>
+</a>
+</div>
+</div>
+<div class="mt-6">
+<h2 class="pb-3 pt-4 text-[22px] font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">Temel Dualar</h2>
+<div class="space-y-2">
+<a class="flex min-h-[72px] cursor-pointer items-center gap-4 rounded-lg bg-pastel-blue p-3 transition-colors hover:bg-black/5 dark:bg-dark-pastel-blue dark:hover:bg-white/5" href="#">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-white/50 text-dark-pastel-blue dark:bg-black/20 dark:text-pastel-blue">
+<span class="material-symbols-outlined">
+                                    self_improvement
+                                </span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium text-dark-pastel-blue dark:text-pastel-blue">Sübhaneke Duası</p>
+<p class="text-sm font-normal text-dark-pastel-blue/80 dark:text-pastel-blue/80">Namazın başlangıcında okunur</p>
+</div>
+<div class="shrink-0 text-dark-pastel-blue/60 dark:text-pastel-blue/60">
+<span class="material-symbols-outlined text-2xl">
+                                    chevron_right
+                                </span>
+</div>
+</a>
+<a class="flex min-h-[72px] cursor-pointer items-center gap-4 rounded-lg bg-pastel-green p-3 transition-colors hover:bg-black/5 dark:bg-dark-pastel-green dark:hover:bg-white/5" href="#">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-white/50 text-dark-pastel-green dark:bg-black/20 dark:text-pastel-green">
+<span class="material-symbols-outlined">
+                                    self_improvement
+                                </span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium text-dark-pastel-green dark:text-pastel-green">Tahiyyat (Ettahiyyâtü) Duası</p>
+<p class="text-sm font-normal text-dark-pastel-green/80 dark:text-pastel-green/80">Namazların oturuşlarında okunur</p>
+</div>
+<div class="shrink-0 text-dark-pastel-green/60 dark:text-pastel-green/60">
+<span class="material-symbols-outlined text-2xl">
+                                    chevron_right
+                                </span>
+</div>
+</a>
+<a class="flex min-h-[72px] cursor-pointer items-center gap-4 rounded-lg bg-pastel-yellow p-3 transition-colors hover:bg-black/5 dark:bg-dark-pastel-yellow dark:hover:bg-white/5" href="#">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-white/50 text-dark-pastel-yellow dark:bg-black/20 dark:text-pastel-yellow">
+<span class="material-symbols-outlined">
+                                    self_improvement
+                                </span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium text-dark-pastel-yellow dark:text-pastel-yellow">Salli Barik Duaları</p>
+<p class="text-sm font-normal text-dark-pastel-yellow/80 dark:text-pastel-yellow/80">Namazların son oturuşunda okunur</p>
+</div>
+<div class="shrink-0 text-dark-pastel-yellow/60 dark:text-pastel-yellow/60">
+<span class="material-symbols-outlined text-2xl">
+                                    chevron_right
+                                </span>
+</div>
+</a>
+<a class="flex min-h-[72px] cursor-pointer items-center gap-4 rounded-lg bg-pastel-pink p-3 transition-colors hover:bg-black/5 dark:bg-dark-pastel-pink dark:hover:bg-white/5" href="#">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-white/50 text-dark-pastel-pink dark:bg-black/20 dark:text-pastel-pink">
+<span class="material-symbols-outlined">
+                                    self_improvement
+                                </span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium text-dark-pastel-pink dark:text-pastel-pink">Rabbena Duaları</p>
+<p class="text-sm font-normal text-dark-pastel-pink/80 dark:text-pastel-pink/80">Her türlü dilek için okunur</p>
+</div>
+<div class="shrink-0 text-dark-pastel-pink/60 dark:text-pastel-pink/60">
+<span class="material-symbols-outlined text-2xl">
+                                    chevron_right
+                                </span>
+</div>
+</a>
+</div>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 z-10 mx-auto max-w-md border-t border-border-light bg-surface-light/80 backdrop-blur-sm dark:border-border-dark dark:bg-surface-dark/80">
+<div class="flex h-20 items-center justify-around px-2">
+<a class="flex flex-col items-center gap-1 p-2 text-text-secondary-light dark:text-text-secondary-dark" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs font-medium">Anasayfa</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-text-secondary-light dark:text-text-secondary-dark" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-xs font-medium">Kıble</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="text-xs font-bold">Kur'an</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-text-secondary-light dark:text-text-secondary-dark" href="#">
+<span class="material-symbols-outlined">more_horiz</span>
+<span class="text-xs font-medium">Daha Fazla</span>
+</a>
+</div>
+</nav>
+</div>
+</div>
+</body></html>

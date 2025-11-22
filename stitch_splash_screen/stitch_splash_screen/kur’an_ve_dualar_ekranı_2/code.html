@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kur'an &amp; Dualar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#14b866",
+              "background-light": "#f6f8f7",
+              "background-dark": "#112119",
+              "surface-light": "#ffffff",
+              "surface-dark": "#182c22",
+              "text-primary-light": "#1C1C1E",
+              "text-primary-dark": "#E1E1E1",
+              "text-secondary-light": "#8A8A8E",
+              "text-secondary-dark": "#93c8ad",
+              "border-light": "#E0E0E0",
+              "border-dark": "#244736"
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "0.5rem",
+              "lg": "0.75rem",
+              "xl": "1rem",
+              "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="mx-auto max-w-md">
+<div class="relative flex min-h-screen w-full flex-col">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<!-- Top App Bar -->
+<div class="flex h-16 items-center px-4">
+<div class="flex size-12 shrink-0 items-center justify-start">
+<!-- Placeholder for a back button or menu icon if needed -->
+</div>
+<h1 class="flex-1 text-center text-lg font-bold text-text-primary-light dark:text-text-primary-dark">Kur'an &amp; Dualar</h1>
+<div class="flex w-12 items-center justify-end">
+<button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-text-primary-light dark:text-text-primary-dark">
+<span class="material-symbols-outlined text-2xl">
+                                more_vert
+                            </span>
+</button>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="px-4 pb-4 pt-1">
+<label class="flex h-12 w-full min-w-40 flex-col">
+<div class="flex h-full w-full flex-1 items-stretch rounded-lg">
+<div class="flex items-center justify-center rounded-l-lg border-y border-l border-border-light bg-surface-light pl-4 text-text-secondary-light dark:border-border-dark dark:bg-surface-dark dark:text-text-secondary-dark">
+<span class="material-symbols-outlined text-2xl">
+                                    search
+                                </span>
+</div>
+<input class="form-input h-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg border-y border-r border-border-light bg-surface-light px-4 pl-2 text-base font-normal leading-normal text-text-primary-light placeholder:text-text-secondary-light focus:outline-0 focus:ring-2 focus:ring-primary/50 dark:border-border-dark dark:bg-surface-dark dark:text-text-primary-dark dark:placeholder:text-text-secondary-dark" placeholder="Sure veya dua ara..." value=""/>
+</div>
+</label>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow px-4 pb-28 pt-2">
+<!-- Section: Sureler -->
+<div>
+<h2 class="pb-3 pt-4 text-[22px] font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">Sureler</h2>
+<div class="space-y-2">
+<!-- List Item: Fatiha -->
+<div class="flex min-h-[72px] cursor-pointer items-center gap-4 rounded-lg bg-surface-light p-3 transition-colors hover:bg-black/5 dark:bg-surface-dark dark:hover:bg-white/5">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">
+                                    menu_book
+                                </span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium text-text-primary-light dark:text-text-primary-dark">Fatiha Suresi</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark">Mekke, 7 ayet</p>
+</div>
+<div class="shrink-0 text-text-secondary-light dark:text-text-secondary-dark">
+<span class="material-symbols-outlined text-2xl">
+                                    chevron_right
+                                </span>
+</div>
+</div>
+<!-- List Item: Bakara -->
+<div class="flex min-h-[72px] cursor-pointer items-center gap-4 rounded-lg bg-surface-light p-3 transition-colors hover:bg-black/5 dark:bg-surface-dark dark:hover:bg-white/5">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">
+                                    menu_book
+                                </span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium text-text-primary-light dark:text-text-primary-dark">Bakara Suresi</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark">Medine, 286 ayet</p>
+</div>
+<div class="shrink-0 text-text-secondary-light dark:text-text-secondary-dark">
+<span class="material-symbols-outlined text-2xl">
+                                    chevron_right
+                                </span>
+</div>
+</div>
+<!-- List Item: Ali İmran -->
+<div class="flex min-h-[72px] cursor-pointer items-center gap-4 rounded-lg bg-surface-light p-3 transition-colors hover:bg-black/5 dark:bg-surface-dark dark:hover:bg-white/5">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">
+                                    menu_book
+                                </span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium text-text-primary-light dark:text-text-primary-dark">Âl-i İmrân Suresi</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark">Medine, 200 ayet</p>
+</div>
+<div class="shrink-0 text-text-secondary-light dark:text-text-secondary-dark">
+<span class="material-symbols-outlined text-2xl">
+                                    chevron_right
+                                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Temel Dualar -->
+<div class="mt-6">
+<h2 class="pb-3 pt-4 text-[22px] font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">Temel Dualar</h2>
+<div class="space-y-2">
+<!-- List Item: Sübhaneke -->
+<div class="flex min-h-[72px] cursor-pointer items-center gap-4 rounded-lg bg-surface-light p-3 transition-colors hover:bg-black/5 dark:bg-surface-dark dark:hover:bg-white/5">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">
+                                    self_improvement
+                                </span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium text-text-primary-light dark:text-text-primary-dark">Sübhaneke Duası</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark">Namazın başlangıcında okunur</p>
+</div>
+<div class="shrink-0 text-text-secondary-light dark:text-text-secondary-dark">
+<span class="material-symbols-outlined text-2xl">
+                                    chevron_right
+                                </span>
+</div>
+</div>
+<!-- List Item: Tahiyyat -->
+<div class="flex min-h-[72px] cursor-pointer items-center gap-4 rounded-lg bg-surface-light p-3 transition-colors hover:bg-black/5 dark:bg-surface-dark dark:hover:bg-white/5">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">
+                                    self_improvement
+                                </span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium text-text-primary-light dark:text-text-primary-dark">Tahiyyat (Ettahiyyâtü) Duası</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark">Namazların oturuşlarında okunur</p>
+</div>
+<div class="shrink-0 text-text-secondary-light dark:text-text-secondary-dark">
+<span class="material-symbols-outlined text-2xl">
+                                    chevron_right
+                                </span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-10 mx-auto max-w-md border-t border-border-light bg-surface-light/80 backdrop-blur-sm dark:border-border-dark dark:bg-surface-dark/80">
+<div class="flex h-20 items-center justify-around px-2">
+<a class="flex flex-col items-center gap-1 p-2 text-text-secondary-light dark:text-text-secondary-dark" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs font-medium">Anasayfa</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-text-secondary-light dark:text-text-secondary-dark" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-xs font-medium">Kıble</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="text-xs font-bold">Kur'an</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-text-secondary-light dark:text-text-secondary-dark" href="#">
+<span class="material-symbols-outlined">more_horiz</span>
+<span class="text-xs font-medium">Daha Fazla</span>
+</a>
+</div>
+</nav>
+</div>
+</div>
+</body></html>
