@@ -8,6 +8,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
+import '../l10n/app_localizations.dart';
 import '../providers/app_providers.dart';
 
 class MoreNearbyMosquesPage extends ConsumerWidget {
@@ -18,6 +19,7 @@ class MoreNearbyMosquesPage extends ConsumerWidget {
     final cs = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final posAsync = ref.watch(positionProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -49,7 +51,7 @@ class MoreNearbyMosquesPage extends ConsumerWidget {
                       ),
                       Expanded(
                         child: Text(
-                          'Yakın Camiler',
+                          l10n.nearbyMosquesTitle,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
@@ -71,13 +73,13 @@ class MoreNearbyMosquesPage extends ConsumerWidget {
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
                     children: [
                       Text(
-                        'Bulunduğun yere en yakın camiler',
+                        l10n.closestMosques,
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Konumuna göre yakınındaki camileri listelemek için harita servisi ve cami verileri eklendiğinde burada görebileceksin.',
+                        l10n.nearbyMosquesDesc,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           height: 1.4,
                           color: isDark
@@ -92,7 +94,7 @@ class MoreNearbyMosquesPage extends ConsumerWidget {
                           loading: () =>
                               const Center(child: CircularProgressIndicator()),
                           error: (e, _) =>
-                              Center(child: Text('Konum alınamadı: $e')),
+                              Center(child: Text('${l10n.locationError}: $e')),
                           data: (pos) => ClipRRect(
                             borderRadius: BorderRadius.circular(16),
                             child: FlutterMap(
@@ -138,7 +140,7 @@ class MoreNearbyMosquesPage extends ConsumerWidget {
                             const Center(child: CircularProgressIndicator()),
                         error: (e, _) => Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Text('Yakın camiler alınamadı: $e'),
+                          child: Text('${l10n.nearbyMosquesLoading}: $e'),
                         ),
                         data: (pos) => FutureBuilder<List<_NearbyMosque>>(
                           future: _fetchNearbyMosques(pos),
@@ -155,7 +157,7 @@ class MoreNearbyMosquesPage extends ConsumerWidget {
                                   vertical: 8,
                                 ),
                                 child: Text(
-                                  'Yakın camiler alınamadı: ${snapshot.error}',
+                                  '${l10n.nearbyMosquesLoading}: ${snapshot.error}',
                                 ),
                               );
                             }
@@ -166,7 +168,7 @@ class MoreNearbyMosquesPage extends ConsumerWidget {
                                   vertical: 8,
                                 ),
                                 child: Text(
-                                  'Bu bölgede kayıtlı cami bulunamadı. Aşağıdaki haritadan Google Haritalar üzerinde arama yapabilirsin.',
+                                  l10n.noMosquesFound,
                                   style: Theme.of(context).textTheme.bodySmall
                                       ?.copyWith(
                                         color: isDark
@@ -196,10 +198,8 @@ class MoreNearbyMosquesPage extends ConsumerWidget {
                                           ScaffoldMessenger.of(
                                             context,
                                           ).showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                'Harita açılamadı.',
-                                              ),
+                                            SnackBar(
+                                              content: Text(l10n.mapError),
                                             ),
                                           );
                                         }
@@ -226,22 +226,22 @@ class MoreNearbyMosquesPage extends ConsumerWidget {
                             )) {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Harita açılamadı.'),
-                                  ),
+                                  SnackBar(content: Text(l10n.mapError)),
                                 );
                               }
                             }
                           } catch (e) {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Konum alınamadı: $e')),
+                                SnackBar(
+                                  content: Text('${l10n.locationError}: $e'),
+                                ),
                               );
                             }
                           }
                         },
                         icon: const Icon(Icons.map),
-                        label: const Text('Haritada aç'),
+                        label: Text(l10n.openInMap),
                       ),
                     ],
                   ),
@@ -269,6 +269,7 @@ class _MosquePlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return InkWell(
       borderRadius: BorderRadius.circular(12),
@@ -310,7 +311,7 @@ class _MosquePlaceholder extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Mesafe: $distance',
+                    '${l10n.distance}: $distance',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: isDark
                           ? const Color(0xFF9CA3AF)
@@ -361,12 +362,12 @@ Future<List<_NearbyMosque>> _fetchNearbyMosques(Position pos) async {
       .timeout(
         const Duration(seconds: 10),
         onTimeout: () {
-          throw Exception('Cami servisine bağlanırken zaman aşımı oluştu');
+          throw Exception('Timeout connecting to mosque service');
         },
       );
 
   if (response.statusCode != 200) {
-    throw Exception('Yakın camiler alınamadı: ${response.statusCode}');
+    throw Exception('Failed to fetch nearby mosques: ${response.statusCode}');
   }
 
   final data = jsonDecode(response.body) as Map<String, dynamic>;

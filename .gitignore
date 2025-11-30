@@ -44,3 +44,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 node_modules
+
+# Temporary files
+test_output*.txt
+test_result*.txt
+*_log.txt
+analyze.txt
+test_output.json

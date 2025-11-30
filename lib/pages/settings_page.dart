@@ -6,9 +6,12 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../theme/theme_mode_controller.dart';
 import '../providers/locale_provider.dart';
 import '../l10n/app_localizations.dart';
+import '../services/notification_service.dart';
+import '../services/alarm_service.dart';
+import '../providers/app_providers.dart';
+import '../providers/font_size_provider.dart';
 import 'privacy_permissions_page.dart';
 import 'more_location_page.dart';
-import 'notification_settings_page.dart';
 import 'stitch_qibla_page.dart';
 import 'about_page.dart';
 
@@ -20,10 +23,14 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
-  bool _animationsEnabled = true;
+  bool _prayerNotifications = true;
+  bool _prayerBarEnabled = false;
 
   String _appVersion = '';
   String _buildNumber = '';
+
+  static const _prefsKeyPrayerNotifications = 'prayer_notifications_enabled';
+  static const _prefsKeyPrayerBar = 'prayer_bar_enabled';
 
   @override
   void initState() {
@@ -43,7 +50,82 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _animationsEnabled = prefs.getBool('animations_enabled') ?? true;
+      _prayerNotifications =
+          prefs.getBool(_prefsKeyPrayerNotifications) ?? true;
+      _prayerBarEnabled = prefs.getBool(_prefsKeyPrayerBar) ?? false;
+    });
+  }
+
+  Future<void> _togglePrayerNotifications(bool value) async {
+    setState(() => _prayerNotifications = value);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_prefsKeyPrayerNotifications, value);
+    if (value) {
+      await NotificationService.instance.requestPermission();
+      final asyncTimes = ref.read(todayPrayerTimesProvider);
+      asyncTimes.whenData((times) async {
+        await AlarmService.instance.scheduleTodayAdhansIfNeeded(times);
+      });
+    } else {
+      for (int i = 1; i <= 320; i++) {
+        await NotificationService.instance.cancelReminder(i);
+      }
+      await NotificationService.instance.hidePrayerBar();
+    }
+  }
+
+  Future<void> _togglePrayerBar(bool value) async {
+    setState(() => _prayerBarEnabled = value);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_prefsKeyPrayerBar, value);
+    final asyncTimes = ref.read(todayPrayerTimesProvider);
+    asyncTimes.whenData((times) async {
+      if (value) {
+        final l10n = AppLocalizations.of(context);
+        final title = l10n.todaysPrayerTimes;
+        final body =
+            '${l10n.fajr} ${times.fajr}  |  ${l10n.dhuhr} ${times.dhuhr}  |  ${l10n.maghrib} ${times.maghrib}';
+        final bigText =
+            '${l10n.fajr} ${times.fajr}  |  ${l10n.sunrise} ${times.sunrise}  |  ${l10n.dhuhr} ${times.dhuhr}\n'
+            '${l10n.asr} ${times.asr}  |  ${l10n.maghrib} ${times.maghrib}  |  ${l10n.isha} ${times.isha}';
+        final summaryText =
+            '${l10n.sunrise} ${times.sunrise}  |  ${l10n.asr} ${times.asr}';
+
+        await NotificationService.instance.ensurePrayerBarForToday(
+          times: times,
+          title: title,
+          body: body,
+          bigText: bigText,
+          summaryText: summaryText,
+        );
+      } else {
+        await NotificationService.instance.hidePrayerBar();
+      }
+    });
+  }
+
+  Future<void> _resetNotificationSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    for (int i = 1; i <= 320; i++) {
+      await NotificationService.instance.cancelReminder(i);
+    }
+
+    await prefs.setBool('adhan_master', true);
+    await prefs.setBool('prayer_notifications_enabled', true);
+    await prefs.setBool('adhan_fajr', true);
+    await prefs.setBool('adhan_dhuhr', true);
+    await prefs.setBool('adhan_asr', true);
+    await prefs.setBool('adhan_maghrib', true);
+    await prefs.setBool('adhan_isha', true);
+    await prefs.setBool('prayer_bar_enabled', false);
+
+    await _loadSettings();
+
+    await NotificationService.instance.requestPermission();
+    final asyncTimes = ref.read(todayPrayerTimesProvider);
+    asyncTimes.whenData((times) async {
+      await AlarmService.instance.scheduleTodayAdhansIfNeeded(times);
     });
   }
 
@@ -154,16 +236,86 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           },
                         ),
                         const Divider(height: 0, indent: 16, endIndent: 16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.format_size,
+                                    color: Color(0xFF14B866),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Text(
+                                      l10n.fontSize,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.copyWith(
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? Colors.white
+                                                : Colors.black87,
+                                          ),
+                                    ),
+                                  ),
+                                  Text(
+                                    () {
+                                      // Use the current provider value for the label to reflect the active setting
+                                      // or use a local state if we want the label to update while dragging.
+                                      // Let's stick to provider for now, or better, read the slider value if we had local state.
+                                      // Since we are inside a StatefulBuilder (from the dialog previously? No, this is directly in build now).
+                                      // We need a local state to update the slider UI while dragging without rebuilding the whole app.
+                                      // So we should wrap this part in a StatefulBuilder or hook.
+                                      final scale = ref.watch(fontSizeProvider);
+                                      if (scale == 0.85) {
+                                        return l10n.fontSizeSmall;
+                                      }
+                                      if (scale == 1.0) {
+                                        return l10n.fontSizeMedium;
+                                      }
+                                      if (scale == 1.15) {
+                                        return l10n.fontSizeLarge;
+                                      }
+                                      if (scale == 1.3) {
+                                        return l10n.fontSizeExtraLarge;
+                                      }
+                                      return l10n.fontSizeMedium;
+                                    }(),
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(
+                                          color:
+                                              Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors.white70
+                                              : Colors.black54,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              _FontSizeSlider(ref: ref),
+                            ],
+                          ),
+                        ),
+                        const Divider(height: 0, indent: 16, endIndent: 16),
                         _StyledSettingsItem(
                           icon: Icons.animation,
                           title: l10n.animations,
                           subtitle: l10n.showAnimations,
                           isSwitch: true,
-                          switchValue: _animationsEnabled,
-                          onSwitchChanged: (v) async {
-                            setState(() => _animationsEnabled = v);
-                            final prefs = await SharedPreferences.getInstance();
-                            await prefs.setBool('animations_enabled', v);
+                          switchValue: ref.watch(animationsEnabledProvider),
+                          onSwitchChanged: (v) {
+                            ref
+                                .read(animationsEnabledProvider.notifier)
+                                .setEnabled(v);
                           },
                         ),
                       ],
@@ -174,15 +326,76 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       children: [
                         _StyledSettingsItem(
                           icon: Icons.notifications_active_outlined,
-                          title: l10n.notifications,
+                          title: l10n.prayerNotifications,
                           subtitle: l10n.adhanNotificationsDesc,
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    const NotificationSettingsPage(),
+                          isSwitch: true,
+                          switchValue: _prayerNotifications,
+                          onSwitchChanged: _togglePrayerNotifications,
+                        ),
+                        const Divider(height: 0, indent: 16, endIndent: 16),
+                        _StyledSettingsItem(
+                          icon: Icons.notification_important_outlined,
+                          title: l10n.prayerBarInNotification,
+                          subtitle: l10n.locale.languageCode == 'tr'
+                              ? 'Bildirim çubuğunda namaz vakitlerini göster'
+                              : 'Show prayer times in notification bar',
+                          isSwitch: true,
+                          switchValue: _prayerBarEnabled,
+                          onSwitchChanged: _togglePrayerBar,
+                        ),
+                        const Divider(height: 0, indent: 16, endIndent: 16),
+
+                        _StyledSettingsItem(
+                          icon: Icons.refresh,
+                          title: l10n.reset,
+                          subtitle: l10n.locale.languageCode == 'tr'
+                              ? 'Bildirim ve ezan ayarlarını varsayılan değerlerine sıfırla'
+                              : 'Reset notification and adhan settings to default values',
+                          onTap: () async {
+                            final confirmed = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text(l10n.reset),
+                                content: Text(
+                                  l10n.locale.languageCode == 'tr'
+                                      ? 'Bildirim ve ezan ayarlarını varsayılan değerlerine sıfırlamak istediğinizden emin misiniz?'
+                                      : 'Are you sure you want to reset notification and adhan settings to default values?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, false),
+                                    child: Text(l10n.cancel),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, true),
+                                    child: Text(
+                                      l10n.reset,
+                                      style: const TextStyle(
+                                        color: Colors.orange,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             );
+
+                            if (confirmed == true) {
+                              await _resetNotificationSettings();
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      l10n.locale.languageCode == 'tr'
+                                          ? 'Bildirim ve ezan ayarları sıfırlandı.'
+                                          : 'Notification and adhan settings reset.',
+                                    ),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              }
+                            }
                           },
                         ),
                       ],
@@ -361,7 +574,8 @@ class _StyledSettingsSection extends StatelessWidget {
           ),
         ),
         Card(
-          elevation: isDark ? 1 : 2,
+          elevation: 4,
+          shadowColor: Colors.black26,
           margin: const EdgeInsets.symmetric(horizontal: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -437,6 +651,44 @@ class _StyledSettingsItem extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _FontSizeSlider extends StatefulWidget {
+  const _FontSizeSlider({required this.ref});
+
+  final WidgetRef ref;
+
+  @override
+  State<_FontSizeSlider> createState() => _FontSizeSliderState();
+}
+
+class _FontSizeSliderState extends State<_FontSizeSlider> {
+  double? _localValue;
+
+  @override
+  Widget build(BuildContext context) {
+    final currentValue = _localValue ?? widget.ref.watch(fontSizeProvider);
+
+    return Slider(
+      value: currentValue ?? 1.0,
+      min: 0.85,
+      max: 1.3,
+      divisions: 3,
+      activeColor: const Color(0xFF14B866),
+      inactiveColor: const Color(0xFF14B866).withValues(alpha: 0.3),
+      onChanged: (value) {
+        setState(() {
+          _localValue = value;
+        });
+      },
+      onChangeEnd: (value) {
+        widget.ref.read(fontSizeProvider.notifier).setFontSize(value);
+        setState(() {
+          _localValue = null;
+        });
+      },
     );
   }
 }

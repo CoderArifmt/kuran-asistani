@@ -1,93 +1,189 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/material.dart'; // For TimeOfDay
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-import 'package:timezone/timezone.dart' as tz;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
-
+import 'package:permission_handler/permission_handler.dart'; // Add this import
 import '../models/prayer_times.dart';
 
 class NotificationService {
   NotificationService._internal();
-
+  @visibleForTesting
+  NotificationService.visibleForTesting();
   static final NotificationService instance = NotificationService._internal();
-
-  static const int _prayerBarNotificationId = 9001;
-  static const String _prayerBarPrefsKey = 'prayer_bar_enabled';
-  static const String _muteAdhanActionId = 'ACTION_MUTE_ADHAN';
+  static const int _prayerBarId = 9999; // Tek sabit
 
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
 
   Future<void> initialize() async {
-    const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
-    );
-    const initializationSettings = InitializationSettings(
+    // Timezone ayarı
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Europe/Istanbul'));
+
+    const AndroidInitializationSettings androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const InitializationSettings initSettings = InitializationSettings(
       android: androidSettings,
+      // iOS ve macOS için boş InitializationSettings ayarları
+      iOS: DarwinInitializationSettings(),
+      macOS: DarwinInitializationSettings(),
     );
 
     await _plugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (response) async {
-        if (response.actionId == _muteAdhanActionId) {
-          await _handleMuteAdhanAction();
-        }
+      initSettings,
+      onDidReceiveNotificationResponse: (response) {
+        // Handle notification tap
+        debugPrint('Bildirime Tıklama: ${response.payload}');
       },
     );
+
+    await _requestPermissions(); // ÖNEMLİ: Android 13+ ve iOS için
   }
 
-  Future<void> _handleMuteAdhanAction() async {
-    final prefs = await SharedPreferences.getInstance();
-    // Ezan master anahtarını kapat
-    await prefs.setBool('adhan_master', false);
-    await prefs.setBool('prayer_notifications_enabled', false);
+  Future<void> requestPermission() async {
+    await _requestPermissions();
+  }
 
-    // Gelecekteki tüm ezan alarmlarını iptal et (1-5 ID'lerini kullanıyoruz)
-    for (int i = 1; i <= 5; i++) {
-      await AndroidAlarmManager.cancel(i);
-    }
-    // Planlanmış namaz bildirimlerini iptal et (100-105 aralığı)
-    for (int i = 101; i <= 105; i++) {
-      await _plugin.cancel(i);
+  Future<void> openNotificationSettings() async {
+    await openAppSettings();
+  }
+
+  Future<void> _requestPermissions() async {
+    if (Platform.isAndroid) {
+      await _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.requestNotificationsPermission();
+    } else if (Platform.isIOS || Platform.isMacOS) {
+      await _plugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >()
+          ?.requestPermissions(alert: true, badge: true, sound: true);
     }
   }
 
-  Future<void> showPrayerBar({
-    required PrayerTimes times,
+  /// HEMEN test için bildirim (butona basınca görmen için)
+  Future<void> showTestNotification() async {
+    const androidDetails = AndroidNotificationDetails(
+      'test_channel',
+      'Test Bildirimleri',
+      channelDescription: 'Test için basit bildirim kanalı',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound('azan'), // ezan.mp3
+      ticker: 'Test Bildirimi',
+      audioAttributesUsage:
+          AudioAttributesUsage.alarm, // Alarm olarak çalmasını sağlar
+    );
+
+    const platformDetails = NotificationDetails(android: androidDetails);
+
+    await _plugin.show(
+      999, // rastgele id
+      'Test Bildirimi',
+      'Bu bir test bildirimidir.',
+      platformDetails,
+      payload: 'test',
+    );
+    debugPrint('[NotificationService] Test bildirimi gönderildi.');
+  }
+
+  /// Belirli bir tarih-saatte ezan bildirimi + ses
+  Future<void> schedulePrayerNotification({
+    required int id,
+    required DateTime time,
     required String title,
     required String body,
-    required String bigText,
-    required String summaryText,
   }) async {
-    final androidDetails = AndroidNotificationDetails(
-      'prayer_bar_channel',
-      'Prayer Times Bar',
-      channelDescription:
-          'Permanently shows today\'s prayer times in the notification bar.',
-      importance: Importance.low,
-      priority: Priority.low,
-      ongoing: true,
-      showWhen: false,
-      category: AndroidNotificationCategory.status,
-      onlyAlertOnce: true,
-      color: const Color(0xFF14B866),
-      styleInformation: BigTextStyleInformation(
-        bigText,
-        contentTitle: title,
-        summaryText: summaryText,
+    // Geçmişse boşuna planlama
+    if (time.isBefore(DateTime.now())) {
+      debugPrint(
+        '[NotificationService] Geçmiş zamana ait bildirim ($id) atlandı: $time',
+      );
+      return;
+    }
+
+    final tz.TZDateTime tzTime = tz.TZDateTime.from(time, tz.local);
+    debugPrint('[NotificationService] Raw time: $time');
+    debugPrint('[NotificationService] Converted tzTime: $tzTime');
+
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+          'ezan_channel_v2', // Channel ID updated
+          'Ezan Bildirimleri',
+          channelDescription: 'Ezan vakti geldiğinde çalan bildirimler',
+          importance: Importance.max,
+          priority: Priority.high,
+          playSound: true,
+          sound: RawResourceAndroidNotificationSound('azan'), // ezan.mp3
+          ticker: 'Ezan vakti',
+          audioAttributesUsage:
+              AudioAttributesUsage.alarm, // Alarm olarak çalmasını sağlar
+        );
+    // iOS için de aynı sesi kullanmak istiyorsak, iOSNotificationDetails içinde `sound` belirtmeliyiz
+    // Ancak RawResourceAndroidNotificationSound doğrudan iOS'ta çalışmaz.
+    // iOS için özel sesler projenin Runner/Resources klasörüne eklenmeli ve isimsiz olarak referans verilmeli.
+    // Şimdilik sadece Android kısmına odaklanıyoruz.
+
+    const NotificationDetails platformDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: DarwinNotificationDetails(
+        // For iOS, you typically put the sound file in the Runner/Resources folder
+        // and refer to it by its filename. e.g., 'azan.aiff'
+        // This example focuses on Android specific sound.
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+        sound:
+            'azan.aiff', // Assuming you have azan.aiff in iOS Runner/Resources
       ),
     );
 
-    final details = NotificationDetails(android: androidDetails);
-
-    await _plugin.show(_prayerBarNotificationId, title, body, details);
+    await _plugin.zonedSchedule(
+      id,
+      title,
+      body,
+      tzTime,
+      platformDetails,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'ezan',
+      matchDateTimeComponents: DateTimeComponents.dateAndTime,
+    );
+    debugPrint('[NotificationService] Ezan bildirimi ($id) planlandı: $tzTime');
   }
 
-  Future<void> hidePrayerBar() async {
-    await _plugin.cancel(_prayerBarNotificationId);
+  Future<void> cancelReminder(int id) async {
+    await _plugin.cancel(id);
+    debugPrint('[NotificationService] Bildirim ($id) iptal edildi.');
+  }
+
+  Future<void> cancelAllReminders() async {
+    await _plugin.cancelAll();
+    debugPrint('[NotificationService] Tüm bildirimler iptal edildi.');
+  }
+
+  // Not: Bu metotlar NotificationService.instance.init() içinde çağrıldığı için
+  // manuel olarak başka yerden çağırmaya gerek kalmayabilir.
+  // Ancak yine de genel izin kontrolü için kullanılabilir.
+  Future<bool?> areNotificationsEnabled() async {
+    if (Platform.isAndroid) {
+      final androidImpl = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      return androidImpl?.areNotificationsEnabled();
+    }
+    // iOS/macOS için izin kontrolü
+    final status = await Permission.notification.status;
+    return status.isGranted;
   }
 
   Future<void> ensurePrayerBarForToday({
@@ -97,12 +193,55 @@ class NotificationService {
     required String bigText,
     required String summaryText,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
-    final enabled = prefs.getBool(_prayerBarPrefsKey) ?? false;
-    if (!enabled) return;
+    try {
+      // Tek sabit kullanılıyor
+      // Günün namaz vakitlerini bir satırda birleştiriyoruz
+      final String timesText =
+          'İmsak: ${times.fajr} | Güneş: ${times.sunrise} | Öğle: ${times.dhuhr} | İkindi: ${times.asr} | Akşam: ${times.maghrib} | Yatsı: ${times.isha}';
+      final AndroidNotificationDetails androidDetails =
+          AndroidNotificationDetails(
+            'prayer_bar_channel',
+            'Namaz Çubuğu',
+            channelDescription: 'Günlük namaz hatırlatma çubuğu',
+            importance: Importance.low,
+            priority: Priority.low,
+            ongoing: true,
+            autoCancel: false,
+            styleInformation: BigTextStyleInformation(
+              timesText,
+              contentTitle: title,
+              summaryText: summaryText,
+            ),
+          );
+      final NotificationDetails platformDetails = NotificationDetails(
+        android: androidDetails,
+      );
+      await _plugin.show(
+        _prayerBarId,
+        title,
+        body,
+        platformDetails,
+        payload: 'prayer_bar',
+      );
+      debugPrint('[NotificationService] Prayer bar shown with today\'s times');
+    } catch (e) {
+      debugPrint('[NotificationService] Error showing prayer bar: $e');
+    }
+  }
 
-    await requestPermission();
-    await showPrayerBar(
+  Future<void> hidePrayerBar() async {
+    await _plugin.cancel(_prayerBarId);
+    debugPrint('[NotificationService] Prayer bar hidden');
+  }
+
+  /// Günün namaz vakitlerini gösteren bir çubuk bildirimi.
+  Future<void> showTodayPrayerBar({required PrayerTimes times}) async {
+    // Başlık ve özet aynı olabilir, body boş bırakılabilir.
+    const String title = 'Namaz Çubuğu';
+    const String body = '';
+    const String bigText = '';
+    const String summaryText = '';
+    await ensurePrayerBarForToday(
       times: times,
       title: title,
       body: body,
@@ -111,25 +250,66 @@ class NotificationService {
     );
   }
 
-  Future<void> showImmediateTestAdhan() async {
-    await requestPermission();
-
+  Future<void> showAdhanNotification({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
     const androidDetails = AndroidNotificationDetails(
-      'test_channel_v1',
-      'Test Notifications',
-      channelDescription: 'Simple test notifications.',
+      'ezan_channel_v2',
+      'Ezan Bildirimleri',
+      channelDescription: 'Ezan vakti geldiğinde çalan bildirimler',
       importance: Importance.max,
       priority: Priority.high,
       playSound: true,
+      sound: RawResourceAndroidNotificationSound('azan'),
+      ticker: 'Ezan vakti',
+      audioAttributesUsage: AudioAttributesUsage.alarm,
+    );
+    const platformDetails = NotificationDetails(android: androidDetails);
+
+    await _plugin.show(id, title, body, platformDetails, payload: 'ezan');
+  }
+
+  Future<void> scheduleTestNotification({
+    required String prayerName,
+    required Duration delay,
+  }) async {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    final tz.TZDateTime scheduledDate = now.add(delay);
+
+    final int id = now.millisecondsSinceEpoch ~/ 1000;
+
+    debugPrint(
+      '[NotificationService] Test scheduling: Now=$now, Scheduled=$scheduledDate',
     );
 
-    const notificationDetails = NotificationDetails(android: androidDetails);
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+          'ezan_channel_v2',
+          'Ezan Bildirimleri',
+          channelDescription: 'Ezan vakti geldiğinde çalan bildirimler',
+          importance: Importance.max,
+          priority: Priority.high,
+          playSound: true,
+          sound: RawResourceAndroidNotificationSound('azan'),
+          ticker: 'Ezan vakti',
+          audioAttributesUsage: AudioAttributesUsage.alarm,
+        );
+    const NotificationDetails platformDetails = NotificationDetails(
+      android: androidDetails,
+    );
 
-    await _plugin.show(
-      0,
-      'Test notification',
-      'If you see this, local notifications work.',
-      notificationDetails,
+    await _plugin.zonedSchedule(
+      id,
+      'Namaz Vakti',
+      '$prayerName vakti geldi.',
+      scheduledDate,
+      platformDetails,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'ezan_test',
     );
   }
 
@@ -140,7 +320,7 @@ class NotificationService {
     required TimeOfDay time,
   }) async {
     final now = DateTime.now();
-    final scheduled = DateTime(
+    var scheduledDate = DateTime(
       now.year,
       now.month,
       now.day,
@@ -148,113 +328,72 @@ class NotificationService {
       time.minute,
     );
 
-    final firstTime = scheduled.isAfter(now)
-        ? scheduled
-        : scheduled.add(const Duration(days: 1));
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
 
-    final tzTime = tz.TZDateTime.from(firstTime, tz.local);
+    final tz.TZDateTime tzTime = tz.TZDateTime.from(scheduledDate, tz.local);
 
-    const androidDetails = AndroidNotificationDetails(
-      'daily_reminders_channel',
-      'Daily reminders',
-      channelDescription: 'Quran and dua reminders.',
-      importance: Importance.defaultImportance,
-      priority: Priority.defaultPriority,
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+          'daily_reminders',
+          'Günlük Hatırlatmalar',
+          channelDescription: 'Günlük Kur\'an ve dua hatırlatmaları',
+          importance: Importance.defaultImportance,
+          priority: Priority.defaultPriority,
+        );
+
+    const NotificationDetails platformDetails = NotificationDetails(
+      android: androidDetails,
     );
-
-    const details = NotificationDetails(android: androidDetails);
 
     await _plugin.zonedSchedule(
       id,
       title,
       body,
       tzTime,
-      details,
+      platformDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time,
+      matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
     );
   }
 
-  /// Tek seferlik namaz vakti bildirimi (cihaz kapalı olsa bile saat geldiğinde tetiklenir).
-  Future<void> schedulePrayerNotification({
-    required int id,
-    required DateTime time,
-    required String title,
-    required String body,
-  }) async {
-    final tzTime = tz.TZDateTime.from(time, tz.local);
-
-    final prefs = await SharedPreferences.getInstance();
-    final languageCode = prefs.getString('app_locale') ?? 'tr';
-    final muteLabel = languageCode == 'en' ? 'Mute' : 'Sustur';
-
-    final androidDetails = AndroidNotificationDetails(
-      'prayer_adhan_channel',
-      'Prayer Adhan',
-      channelDescription: 'Adhan notifications at prayer times.',
-      importance: Importance.max,
-      priority: Priority.high,
-      playSound: true,
-      actions: <AndroidNotificationAction>[
-        AndroidNotificationAction(
-          _muteAdhanActionId,
-          muteLabel,
-          showsUserInterface: false,
-        ),
-      ],
-    );
-
-    final details = NotificationDetails(android: androidDetails);
-
-    await _plugin.zonedSchedule(
-      id,
-      title,
-      body,
-      tzTime,
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
+  /// Günün namaz çubuğu hatırlatıcı (06:00) planlar.
+  Future<void> scheduleDailyPrayerReminder() async {
+    const int id = 1000;
+    const String title = 'Namaz Çubuğu Hatırlatıcı';
+    const String body = 'Namaz vakti geldi!';
+    final TimeOfDay time = const TimeOfDay(hour: 6, minute: 0);
+    await scheduleDailyReminder(id: id, title: title, body: body, time: time);
+    debugPrint(
+      '[NotificationService] Daily prayer reminder scheduled at 06:00',
     );
   }
 
-  Future<void> cancelReminder(int id) async {
-    await _plugin.cancel(id);
-  }
+  Future<String> getPendingNotificationCount() async {
+    final List<PendingNotificationRequest> pendingNotificationRequests =
+        await _plugin.pendingNotificationRequests();
 
-  Future<bool?> requestPermission() async {
-    if (Platform.isAndroid) {
-      final androidImpl = _plugin
-          .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin
-          >();
-      return androidImpl?.requestNotificationsPermission();
+    if (pendingNotificationRequests.isEmpty) {
+      return 'Bekleyen bildirim yok.';
     }
 
-    if (Platform.isIOS || Platform.isMacOS) {
-      final iosImpl = _plugin
-          .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin
-          >();
-      return iosImpl?.requestPermissions(alert: true, badge: true, sound: true);
+    final buffer = StringBuffer();
+    buffer.writeln('Toplam: ${pendingNotificationRequests.length} bildirim\n');
+
+    // Sort by ID to make it easier to read
+    pendingNotificationRequests.sort((a, b) => a.id.compareTo(b.id));
+
+    for (final notification in pendingNotificationRequests) {
+      buffer.writeln('ID: ${notification.id}');
+      buffer.writeln('Başlık: ${notification.title}');
+      buffer.writeln('İçerik: ${notification.body}');
+      buffer.writeln('Payload: ${notification.payload}');
+      buffer.writeln('---');
     }
 
-    return null;
+    return buffer.toString();
   }
-
-  Future<bool?> areNotificationsEnabled() async {
-    if (Platform.isAndroid) {
-      final androidImpl = _plugin
-          .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin
-          >();
-      return androidImpl?.areNotificationsEnabled();
-    }
-
-    return null;
-  }
-
-  Future<void> openNotificationSettings() async {}
 }

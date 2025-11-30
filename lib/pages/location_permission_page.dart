@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../l10n/app_localizations.dart';
 import 'main_shell.dart';
@@ -25,26 +26,37 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
       if (!mounted) return;
       final loc = AppLocalizations.of(context);
       
+      // 1. Request Location Permission
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         throw loc.deviceLocationServiceOff;
       }
 
-      var permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
+      var locationPermission = await Geolocator.checkPermission();
+      if (locationPermission == LocationPermission.denied) {
+        locationPermission = await Geolocator.requestPermission();
+        if (locationPermission == LocationPermission.denied) {
           throw loc.locationPermissionDenied;
         }
       }
 
-      if (permission == LocationPermission.deniedForever) {
-        // Kullanıcı daha önce "bir daha sorma" demiş. Artık sadece sistem ayarlarından açabilir.
+      if (locationPermission == LocationPermission.deniedForever) {
         await Geolocator.openAppSettings();
-        await Geolocator.openLocationSettings();
         throw loc.locationPermissionPermanentlyDenied;
       }
 
+      // 2. Request Notification Permission
+      final notificationStatus = await Permission.notification.request();
+      if (!notificationStatus.isGranted) {
+        // If denied, show an explanation. If permanently denied, guide to settings.
+        if (notificationStatus.isPermanentlyDenied) {
+          await openAppSettings();
+          throw loc.notificationPermissionPermanentlyDenied;
+        }
+        throw loc.notificationPermissionRequired;
+      }
+
+      // 3. Both permissions granted, proceed to the app
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const MainShell()),
@@ -107,7 +119,7 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      AppLocalizations.of(context).appName,
+                      AppLocalizations.of(context).welcome,
                       textAlign: TextAlign.center,
                       style: Theme.of(context)
                           .textTheme
@@ -120,39 +132,35 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
                                 : const Color(0xFF0F172A),
                           ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      AppLocalizations.of(context).welcome,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: isDark
-                                ? Colors.white
-                                : const Color(0xFF0F172A),
-                          ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.location_on_rounded,
+                          size: 60,
+                          color: cs.primary,
+                        ),
+                        const SizedBox(width: 24),
+                        Icon(
+                          Icons.notifications_active_rounded,
+                          size: 60,
+                          color: cs.primary,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 24),
-                    Icon(
-                      Icons.location_on_rounded,
-                      size: 80,
-                      color: cs.primary,
-                    ),
-                    const SizedBox(height: 16),
                     Text(
-                      AppLocalizations.of(context).allowLocationAccess,
+                      AppLocalizations.of(context).locationAndNotificationPermission,
                       textAlign: TextAlign.center,
                       style: Theme.of(context)
                           .textTheme
                           .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w600),
+                          ?.copyWith(fontWeight: FontWeight.w600, fontSize: 18),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      AppLocalizations.of(context).locationPermissionDescription,
+                      AppLocalizations.of(context).locationAndNotificationPermissionDescription,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             height: 1.4,
@@ -172,6 +180,7 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
                         ),
                         child: Text(
                           _error!,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             color: cs.error,
                             fontSize: 13,
@@ -202,23 +211,13 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
                               child:
                                   CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : Text(AppLocalizations.of(context).giveLocationPermission),
+                          : Text(AppLocalizations.of(context).grantPermissions),
                     ),
                   ),
                   const SizedBox(height: 8),
                   TextButton(
                     onPressed: _loading ? null : _skip,
                     child: Text(AppLocalizations.of(context).continueWithoutPermission),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    AppLocalizations.of(context).dataNotStored,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 11,
-                          color: isDark
-                              ? const Color(0xFF6B7280)
-                              : const Color(0xFF9CA3AF),
-                        ),
                   ),
                 ],
               ),

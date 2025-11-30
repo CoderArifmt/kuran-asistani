@@ -10,6 +10,16 @@ import '../services/ip_location_service.dart';
 import '../core/api/quran_api_service.dart';
 import '../core/models/surah.dart';
 import '../core/models/ayah.dart';
+import '../services/notification_service.dart';
+import '../services/alarm_service.dart';
+
+final notificationServiceProvider = Provider<NotificationService>((ref) {
+  return NotificationService.instance;
+});
+
+final alarmServiceProvider = Provider<AlarmService>((ref) {
+  return AlarmService.instance;
+});
 
 final locationServiceProvider = Provider<LocationService>((ref) {
   return LocationService();
@@ -43,7 +53,7 @@ final ipLocationProvider = FutureProvider<IpLocation?>((ref) async {
 final todayPrayerTimesProvider = FutureProvider<PrayerTimes>((ref) async {
   // Keep provider alive to avoid unnecessary refetches
   ref.keepAlive();
-  
+
   final service = ref.read(aladhanServiceProvider);
 
   double lat;
@@ -62,17 +72,14 @@ final todayPrayerTimesProvider = FutureProvider<PrayerTimes>((ref) async {
     lon = ipLoc.longitude;
   }
 
-  return service.fetchTodayByLocation(
-    latitude: lat,
-    longitude: lon,
-  );
+  return service.fetchTodayByLocation(latitude: lat, longitude: lon);
 });
 
 /// Gösterilen şehir adı: önce geocoding, gerekirse IP ile şehir.
 /// Cache enabled for performance
 final cityNameProvider = FutureProvider<String>((ref) async {
   ref.keepAlive();
-  
+
   try {
     final pos = await ref.watch(positionProvider.future);
     final geocoding = ref.read(geocodingServiceProvider);
@@ -106,8 +113,7 @@ final favoriteDuaIdsProvider = FutureProvider<Set<String>>((ref) async {
   return service.getFavoriteDuaIds();
 });
 
-final favoriteSurahNumbersProvider =
-    FutureProvider<Set<int>>((ref) async {
+final favoriteSurahNumbersProvider = FutureProvider<Set<int>>((ref) async {
   ref.keepAlive();
   final service = ref.read(favoritesServiceProvider);
   return service.getFavoriteSurahNumbers();
@@ -116,31 +122,31 @@ final favoriteSurahNumbersProvider =
 /// Belirli bir ay için namaz takvimi (GPS + IP fallback).
 final monthlyPrayerTimesProvider =
     FutureProvider.family<List<PrayerTimes>, DateTime>((ref, monthBase) async {
-  final service = ref.read(aladhanServiceProvider);
+      final service = ref.read(aladhanServiceProvider);
 
-  double lat;
-  double lon;
+      double lat;
+      double lon;
 
-  try {
-    final pos = await ref.watch(positionProvider.future);
-    lat = pos.latitude;
-    lon = pos.longitude;
-  } catch (_) {
-    final ipLoc = await ref.watch(ipLocationProvider.future);
-    if (ipLoc == null) {
-      throw Exception('Aylık takvim için konum tespit edilemedi');
-    }
-    lat = ipLoc.latitude;
-    lon = ipLoc.longitude;
-  }
+      try {
+        final pos = await ref.watch(positionProvider.future);
+        lat = pos.latitude;
+        lon = pos.longitude;
+      } catch (_) {
+        final ipLoc = await ref.watch(ipLocationProvider.future);
+        if (ipLoc == null) {
+          throw Exception('Aylık takvim için konum tespit edilemedi');
+        }
+        lat = ipLoc.latitude;
+        lon = ipLoc.longitude;
+      }
 
-  return service.fetchMonthByLocation(
-    latitude: lat,
-    longitude: lon,
-    month: monthBase.month,
-    year: monthBase.year,
-  );
-});
+      return service.fetchMonthByLocation(
+        latitude: lat,
+        longitude: lon,
+        month: monthBase.month,
+        year: monthBase.year,
+      );
+    });
 
 final quranApiServiceProvider = Provider<QuranApiService>((ref) {
   return QuranApiService();
@@ -155,8 +161,10 @@ final surahListProvider = FutureProvider<List<Surah>>((ref) async {
 });
 
 /// Seçili sure detayı (Arapça + Türkçe meal + her ayet için audio URL)
-final surahDetailProvider =
-    FutureProvider.family<SurahDetail, int>((ref, surahNumber) async {
+final surahDetailProvider = FutureProvider.family<SurahDetail, int>((
+  ref,
+  surahNumber,
+) async {
   final service = ref.read(quranApiServiceProvider);
   return service.getSurahDetail(surahNumber);
 });

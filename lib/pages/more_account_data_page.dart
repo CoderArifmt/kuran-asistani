@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import '../services/notification_service.dart';
 
 class MoreAccountDataPage extends StatelessWidget {
   const MoreAccountDataPage({super.key});
@@ -86,9 +86,11 @@ class MoreAccountDataPage extends StatelessWidget {
                         onActionPressed: () async {
                           final prefs = await SharedPreferences.getInstance();
                           await prefs.clear();
-                          // Cancel all scheduled alarms
-                          for (int i = 1; i <= 5; i++) {
-                            await AndroidAlarmManager.cancel(i);
+                          // Cancel all scheduled notifications (IDs 1-320 to cover monthly prayer notifications)
+                          for (int i = 1; i <= 320; i++) {
+                            await NotificationService.instance.cancelReminder(
+                              i,
+                            );
                           }
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../l10n/app_localizations.dart';
 import '../providers/app_providers.dart';
 import 'surah_detail_page.dart';
 import 'dua_detail_page.dart';
@@ -256,7 +257,7 @@ class StitchQuranDuaPageGrid extends ConsumerStatefulWidget {
 class _StitchQuranDuaPageGridState
     extends ConsumerState<StitchQuranDuaPageGrid> {
   String _searchQuery = '';
-  int _selectedTab = 0; // 0: Sureler, 1: Dualar
+  int _selectedTab = 0; // 0: Sureler, 1: Dualar, 2: Favoriler
 
   final AudioPlayer _duaPlayer = AudioPlayer();
   String? _currentDuaId;
@@ -278,12 +279,10 @@ class _StitchQuranDuaPageGridState
       if (mounted) setState(() {});
       return;
     }
-
     setState(() {
       _currentDuaId = dua.id;
       _isDuaLoading = true;
     });
-
     try {
       await _duaPlayer.stop();
       await _duaPlayer.setUrl(dua.audioUrl);
@@ -304,6 +303,7 @@ class _StitchQuranDuaPageGridState
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final asyncSurahs = ref.watch(surahListProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -311,25 +311,23 @@ class _StitchQuranDuaPageGridState
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar.large(
-              title: const Text("Kur'an & Dualar"),
+              title: Text(l10n.quranAndDuasTitle),
               centerTitle: false,
               scrolledUnderElevation: 0,
               backgroundColor: theme.scaffoldBackgroundColor,
               surfaceTintColor: Colors.transparent,
-              actions: [
-                IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
-              ],
             ),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   children: [
-                    // Search Bar
                     SearchBar(
                       hintText: _selectedTab == 0
-                          ? 'Sure ara...'
-                          : 'Dua ara...',
+                          ? l10n.searchSurah
+                          : (_selectedTab == 1
+                                ? l10n.searchDua
+                                : l10n.searchFavorite),
                       elevation: WidgetStateProperty.all(0),
                       backgroundColor: WidgetStateProperty.all(
                         theme.cardTheme.color ?? cs.surface,
@@ -345,20 +343,24 @@ class _StitchQuranDuaPageGridState
                       },
                     ),
                     const SizedBox(height: 16),
-                    // Segmented Button
                     SizedBox(
                       width: double.infinity,
                       child: SegmentedButton<int>(
-                        segments: const [
+                        segments: [
                           ButtonSegment(
                             value: 0,
-                            label: Text('Sureler'),
-                            icon: Icon(Icons.menu_book_outlined),
+                            label: FittedBox(child: Text(l10n.surahs)),
+                            icon: const Icon(Icons.menu_book_outlined),
                           ),
                           ButtonSegment(
                             value: 1,
-                            label: Text('Dualar'),
-                            icon: Icon(Icons.volunteer_activism_outlined),
+                            label: FittedBox(child: Text(l10n.duas)),
+                            icon: const Icon(Icons.volunteer_activism_outlined),
+                          ),
+                          ButtonSegment(
+                            value: 2,
+                            label: FittedBox(child: Text(l10n.favorites)),
+                            icon: const Icon(Icons.favorite),
                           ),
                         ],
                         selected: {_selectedTab},
@@ -371,20 +373,22 @@ class _StitchQuranDuaPageGridState
                           visualDensity: VisualDensity.comfortable,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           side: WidgetStateProperty.all(BorderSide.none),
-                          backgroundColor:
-                              WidgetStateProperty.resolveWith<Color>((states) {
-                                if (states.contains(WidgetState.selected)) {
-                                  return cs.primaryContainer;
-                                }
-                                return theme.cardTheme.color ?? cs.surface;
-                              }),
-                          foregroundColor:
-                              WidgetStateProperty.resolveWith<Color>((states) {
-                                if (states.contains(WidgetState.selected)) {
-                                  return cs.onPrimaryContainer;
-                                }
-                                return cs.onSurfaceVariant;
-                              }),
+                          backgroundColor: WidgetStateProperty.resolveWith((
+                            states,
+                          ) {
+                            if (states.contains(WidgetState.selected)) {
+                              return cs.primaryContainer;
+                            }
+                            return theme.cardTheme.color ?? cs.surface;
+                          }),
+                          foregroundColor: WidgetStateProperty.resolveWith((
+                            states,
+                          ) {
+                            if (states.contains(WidgetState.selected)) {
+                              return cs.onPrimaryContainer;
+                            }
+                            return cs.onSurfaceVariant;
+                          }),
                         ),
                       ),
                     ),
@@ -397,10 +401,9 @@ class _StitchQuranDuaPageGridState
         },
         body: asyncSurahs.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Center(child: Text('Hata: $e')),
+          error: (e, _) => Center(child: Text('${l10n.errorLoadingSurahs} $e')),
           data: (surahs) {
             final query = _searchQuery.toLowerCase();
-
             final filteredSurahs = query.isEmpty
                 ? surahs
                 : surahs.where((s) {
@@ -412,30 +415,32 @@ class _StitchQuranDuaPageGridState
                         s.number.toString() == query;
                   }).toList();
 
+            final localizedDuas = _duaItems
+                .map((d) => _getLocalizedDua(context, d))
+                .toList();
             final filteredDuas = query.isEmpty
-                ? _duaItems
-                : _duaItems
+                ? localizedDuas
+                : localizedDuas
                       .where((d) => d.title.toLowerCase().contains(query))
                       .toList();
 
             if (_selectedTab == 0) {
               if (filteredSurahs.isEmpty) {
-                return const Center(child: Text('Sonuç bulunamadı'));
+                return Center(child: Text(l10n.noResultsFound));
               }
               return ListView.builder(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
                 itemCount: filteredSurahs.length,
                 itemBuilder: (context, index) {
                   final s = filteredSurahs[index];
-                  final trName = _surahTurkishNames[s.number] ?? s.englishName;
+                  final displayName = _getSurahName(context, s);
                   final favAsync = ref.watch(favoriteSurahNumbersProvider);
                   final isFavorite =
                       favAsync.value?.contains(s.number) ?? false;
-
                   return _M3SurahCard(
                     number: s.number,
                     arabicName: s.name,
-                    turkishName: trName,
+                    turkishName: displayName,
                     englishName: s.englishName,
                     ayahCount: s.ayahCount,
                     revelationType: s.revelationType,
@@ -450,7 +455,7 @@ class _StitchQuranDuaPageGridState
                         MaterialPageRoute(
                           builder: (_) => SurahDetailPage(
                             surahNumber: s.number,
-                            surahNameTr: trName,
+                            surahNameTr: displayName,
                             surahNameAr: s.name,
                           ),
                         ),
@@ -459,9 +464,9 @@ class _StitchQuranDuaPageGridState
                   );
                 },
               );
-            } else {
+            } else if (_selectedTab == 1) {
               if (filteredDuas.isEmpty) {
-                return const Center(child: Text('Sonuç bulunamadı'));
+                return Center(child: Text(l10n.noResultsFound));
               }
               return ListView.builder(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
@@ -473,7 +478,6 @@ class _StitchQuranDuaPageGridState
                   final isLoading = isCurrent && _isDuaLoading;
                   final favAsync = ref.watch(favoriteDuaIdsProvider);
                   final isFavorite = favAsync.value?.contains(dua.id) ?? false;
-
                   return _M3DuaCard(
                     item: dua,
                     isCurrent: isCurrent,
@@ -501,10 +505,210 @@ class _StitchQuranDuaPageGridState
                   );
                 },
               );
+            } else {
+              // Favorites tab
+              final favSurahNumbers =
+                  ref.watch(favoriteSurahNumbersProvider).value ?? <int>{};
+              final favDuaIds =
+                  ref.watch(favoriteDuaIdsProvider).value ?? <String>{};
+              final surahAsync = ref.watch(surahListProvider);
+              return surahAsync.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) =>
+                    Center(child: Text('${l10n.errorLoadingSurahs} $e')),
+                data: (surahs) {
+                  final favSurahs = surahs
+                      .where((s) => favSurahNumbers.contains(s.number))
+                      .toList();
+                  final favDuas = localizedDuas
+                      .where((d) => favDuaIds.contains(d.id))
+                      .toList();
+
+                  if (favSurahs.isEmpty && favDuas.isEmpty) {
+                    return Center(child: Text(l10n.noFavoritesFound));
+                  }
+
+                  return ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                    children: [
+                      if (favSurahs.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0, top: 4),
+                          child: Text(
+                            l10n.favoriteSurahs,
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        ...favSurahs.map((s) {
+                          final displayName = _getSurahName(context, s);
+                          return ListTile(
+                            leading: const Icon(Icons.menu_book),
+                            title: Text(displayName),
+                            subtitle: Text('${s.name} • ${s.englishName}'),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => SurahDetailPage(
+                                    surahNumber: s.number,
+                                    surahNameTr: displayName,
+                                    surahNameAr: s.name,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }),
+                      ],
+                      if (favDuas.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0, top: 16),
+                          child: Text(
+                            l10n.favoriteDuas,
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        ...favDuas.map((dua) {
+                          final isDark =
+                              Theme.of(context).brightness == Brightness.dark;
+                          final bg = isDark ? dua.bgDark : dua.bgLight;
+                          final textMain = isDark ? dua.bgLight : dua.bgDark;
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: bg,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.5),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(
+                                    Icons.self_improvement,
+                                    color: textMain,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        dua.title,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: textMain,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        dua.subtitle,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: textMain.withValues(
+                                            alpha: 0.8,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ],
+                    ],
+                  );
+                },
+              );
             }
           },
         ),
       ),
+    );
+  }
+
+  String _getSurahName(BuildContext context, dynamic s) {
+    final l10n = AppLocalizations.of(context);
+    if (l10n.locale.languageCode == 'tr') {
+      return _surahTurkishNames[s.number] ?? s.englishName;
+    }
+    return s.englishName;
+  }
+
+  DuaItem _getLocalizedDua(BuildContext context, DuaItem item) {
+    final l10n = AppLocalizations.of(context);
+    String title = item.title;
+    String subtitle = item.subtitle;
+
+    switch (item.id) {
+      case 'subhaneke':
+        title = l10n.subhanekeTitle;
+        subtitle = l10n.subhanekeSubtitle;
+        break;
+      case 'tahiyyat':
+        title = l10n.tahiyyatTitle;
+        subtitle = l10n.tahiyyatSubtitle;
+        break;
+      case 'salli_barik':
+        title = l10n.salliBarikTitle;
+        subtitle = l10n.salliBarikSubtitle;
+        break;
+      case 'barik':
+        title = l10n.barikTitle;
+        subtitle = l10n.barikSubtitle;
+        break;
+      case 'rabbena':
+        title = l10n.rabbenaTitle;
+        subtitle = l10n.rabbenaSubtitle;
+        break;
+      case 'ayetelkursi':
+        title = l10n.ayetelkursiTitle;
+        subtitle = l10n.ayetelkursiSubtitle;
+        break;
+      case 'rabbi_yessir':
+        title = l10n.rabbiYessirTitle;
+        subtitle = l10n.rabbiYessirSubtitle;
+        break;
+      case 'seyyidul_istigfar':
+        title = l10n.seyyidulIstigfarTitle;
+        subtitle = l10n.seyyidulIstigfarSubtitle;
+        break;
+      case 'hasbunallah':
+        title = l10n.hasbunallahTitle;
+        subtitle = l10n.hasbunallahSubtitle;
+        break;
+      case 'kunut1':
+        title = l10n.kunut1Title;
+        subtitle = l10n.kunut1Subtitle;
+        break;
+      case 'kunut2':
+        title = l10n.kunut2Title;
+        subtitle = l10n.kunut2Subtitle;
+        break;
+      case 'yemek':
+        title = l10n.yemekTitle;
+        subtitle = l10n.yemekSubtitle;
+        break;
+    }
+
+    return DuaItem(
+      id: item.id,
+      title: title,
+      subtitle: subtitle,
+      audioUrl: item.audioUrl,
+      bgLight: item.bgLight,
+      bgDark: item.bgDark,
     );
   }
 }
@@ -536,7 +740,10 @@ class _M3SurahCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final revTr = revelationType.toLowerCase() == 'meccan' ? 'Mekke' : 'Medine';
+    final l10n = AppLocalizations.of(context);
+    final revTr = revelationType.toLowerCase() == 'meccan'
+        ? l10n.mecca
+        : l10n.medina;
 
     return Card(
       elevation: 0,
@@ -594,7 +801,7 @@ class _M3SurahCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '$englishName • $revTr • $ayahCount Ayet',
+                      '$englishName • $revTr • $ayahCount ${l10n.verses}',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: cs.onSurfaceVariant,
                       ),

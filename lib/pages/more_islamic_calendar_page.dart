@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../l10n/app_localizations.dart';
 import '../providers/app_providers.dart';
 
 class MoreIslamicCalendarPage extends ConsumerStatefulWidget {
@@ -22,48 +23,13 @@ class _MoreIslamicCalendarPageState
     _currentMonth = DateTime(now.year, now.month);
   }
 
-  String _monthNameTr(int month) {
-    const names = [
-      'Ocak',
-      'Şubat',
-      'Mart',
-      'Nisan',
-      'Mayıs',
-      'Haziran',
-      'Temmuz',
-      'Ağustos',
-      'Eylül',
-      'Ekim',
-      'Kasım',
-      'Aralık',
-    ];
-    return names[month - 1];
-  }
-
-  String _hijriMonthName(int month) {
-    const names = [
-      'Muharrem',
-      'Safer',
-      'Rebiülevvel',
-      'Rebiülahir',
-      'Cemaziyelevvel',
-      'Cemaziyelahir',
-      'Recep',
-      'Şaban',
-      'Ramazan',
-      'Şevval',
-      'Zilkade',
-      'Zilhicce',
-    ];
-    return names[(month - 1).clamp(0, 11)];
-  }
-
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final asyncTodayTimes = ref.watch(todayPrayerTimesProvider);
     final asyncMonth = ref.watch(monthlyPrayerTimesProvider(_currentMonth));
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -95,7 +61,7 @@ class _MoreIslamicCalendarPageState
                       ),
                       Expanded(
                         child: Text(
-                          'İslami Takvim',
+                          l10n.islamicCalendarTitle,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
@@ -117,13 +83,13 @@ class _MoreIslamicCalendarPageState
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
                     children: [
                       Text(
-                        'Hicri takvim ve önemli günler',
+                        l10n.hijriCalendarAndDays,
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Bulunduğun şehre göre günlük hicri tarih ve aylık namaz takvimi Aladhan servisinden alınır.',
+                        l10n.hijriCalendarDesc,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           height: 1.4,
                           color: isDark
@@ -171,7 +137,7 @@ class _MoreIslamicCalendarPageState
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Text(
-                                    'Bugün',
+                                    l10n.today,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleSmall
@@ -183,11 +149,11 @@ class _MoreIslamicCalendarPageState
                             const SizedBox(height: 12),
                             asyncTodayTimes.when(
                               loading: () => Text(
-                                'Miladi tarih: Yükleniyor...',
+                                l10n.gregorianDateLoading,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               error: (e, st) => Text(
-                                'Miladi tarih: hata',
+                                l10n.gregorianDateError,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               data: (times) {
@@ -198,14 +164,14 @@ class _MoreIslamicCalendarPageState
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Miladi tarih: $miladi',
+                                      '${l10n.gregorianDate}: $miladi',
                                       style: Theme.of(
                                         context,
                                       ).textTheme.bodyMedium,
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      'Hicri tarih: $hicri',
+                                      '${l10n.hijriDate}: $hicri',
                                       style: Theme.of(
                                         context,
                                       ).textTheme.bodyMedium,
@@ -235,33 +201,27 @@ class _MoreIslamicCalendarPageState
                           Column(
                             children: [
                               Text(
-                                '${_monthNameTr(_currentMonth.month)} ${_currentMonth.year}',
+                                '${l10n.monthNames[_currentMonth.month - 1]} ${_currentMonth.year}',
                                 style: Theme.of(context).textTheme.titleSmall
                                     ?.copyWith(fontWeight: FontWeight.w600),
                               ),
                               asyncMonth.when(
                                 loading: () => const SizedBox.shrink(),
-                                error: (e, st) => const SizedBox.shrink(),
-                                data: (days) {
-                                  if (days.isEmpty ||
-                                      days.first.hijriDate == null) {
+                                error: (err, stack) => const SizedBox.shrink(),
+                                data: (times) {
+                                  if (times.isEmpty) {
                                     return const SizedBox.shrink();
                                   }
-                                  final parts = days.first.hijriDate!.split(
-                                    '-',
-                                  );
+                                  final firstDay = times.first;
                                   final hijriMonth =
-                                      int.tryParse(parts[1]) ?? 1;
-                                  final hijriYear = parts.length > 2
-                                      ? parts[2]
-                                      : '';
+                                      firstDay.hijriDate?.split(' ')[1] ?? '';
                                   return Text(
-                                    '${_hijriMonthName(hijriMonth)} $hijriYear H',
+                                    hijriMonth,
                                     style: Theme.of(context).textTheme.bodySmall
                                         ?.copyWith(
                                           color: isDark
-                                              ? const Color(0xFF9CA3AF)
-                                              : const Color(0xFF6B7280),
+                                              ? Colors.grey[400]
+                                              : Colors.grey[600],
                                         ),
                                   );
                                 },
@@ -281,52 +241,105 @@ class _MoreIslamicCalendarPageState
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 16),
+                      // Calendar Grid
                       asyncMonth.when(
-                        loading: () =>
-                            const Center(child: CircularProgressIndicator()),
-                        error: (e, st) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Aylık takvim yüklenemedi: $e'),
+                        loading: () => const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(32.0),
+                            child: CircularProgressIndicator(),
+                          ),
                         ),
-                        data: (days) {
-                          if (days.isEmpty) {
-                            return const Text('Bu ay için veri bulunamadı');
-                          }
+                        error: (e, st) => Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Text(l10n.monthlyCalendarError),
+                          ),
+                        ),
+                        data: (times) {
                           return Column(
-                            children: days.map((pt) {
-                              final miladi =
-                                  '${pt.date.day.toString().padLeft(2, '0')}.${pt.date.month.toString().padLeft(2, '0')}';
-                              final hicri = pt.hijriDate ?? '--/--';
+                            children: times.map((day) {
+                              final isToday =
+                                  day.date.year == DateTime.now().year &&
+                                  day.date.month == DateTime.now().month &&
+                                  day.date.day == DateTime.now().day;
+
+                              final hicri = day.hijriDate ?? '';
+
                               return Container(
-                                margin: const EdgeInsets.only(bottom: 4),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 12,
-                                ),
+                                margin: const EdgeInsets.only(bottom: 8),
+                                padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: isDark
-                                      ? const Color(0xFF020617)
-                                      : const Color(0xFFF9FAFB),
-                                  borderRadius: BorderRadius.circular(8),
+                                  color: isToday
+                                      ? const Color(
+                                          0xFF14B866,
+                                        ).withValues(alpha: 0.1)
+                                      : (isDark
+                                            ? const Color(0xFF1F2937)
+                                            : Colors.white),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: isToday
+                                      ? Border.all(
+                                          color: const Color(0xFF14B866),
+                                        )
+                                      : null,
                                 ),
                                 child: Row(
                                   children: [
-                                    SizedBox(
-                                      width: 72,
-                                      child: Text(
-                                        miladi,
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyMedium,
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: isToday
+                                            ? const Color(0xFF14B866)
+                                            : (isDark
+                                                  ? Colors.white.withValues(
+                                                      alpha: 0.05,
+                                                    )
+                                                  : Colors.grey[100]),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          '${day.date.day}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: isToday
+                                                ? Colors.white
+                                                : (isDark
+                                                      ? Colors.white
+                                                      : Colors.black),
+                                          ),
+                                        ),
                                       ),
                                     ),
+                                    const SizedBox(width: 16),
                                     Expanded(
-                                      child: Text(
-                                        'Hicri: $hicri',
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyMedium,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${day.date.day} ${l10n.monthNames[day.date.month - 1]} ${day.date.year}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                          Text(
+                                            hicri,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                  color: isDark
+                                                      ? Colors.grey[400]
+                                                      : Colors.grey[600],
+                                                ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],

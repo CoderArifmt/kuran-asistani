@@ -141,7 +141,7 @@ class MoreFavoritesPage extends ConsumerWidget {
                                 top: 4,
                               ),
                               child: Text(
-                                l10n.favorites,
+                                l10n.favoriteSurahs,
                                 style: Theme.of(context).textTheme.titleSmall
                                     ?.copyWith(fontWeight: FontWeight.w600),
                               ),
@@ -196,7 +196,7 @@ class MoreFavoritesPage extends ConsumerWidget {
                                 top: 16,
                               ),
                               child: Text(
-                                l10n.duas,
+                                l10n.favoriteDuas,
                                 style: Theme.of(context).textTheme.titleSmall
                                     ?.copyWith(fontWeight: FontWeight.w600),
                               ),
@@ -287,66 +287,59 @@ class MoreFavoritesPage extends ConsumerWidget {
 
 // Localize dua titles/subtitles similar to StitchQuranDuaPageGrid
 Map<String, String> localizedDuaTexts(BuildContext context, DuaItem dua) {
-  final lang = Localizations.localeOf(context).languageCode;
-  if (lang != 'en') {
-    return {'title': dua.title, 'subtitle': dua.subtitle};
-  }
+  final l10n = AppLocalizations.of(context);
+  String title = dua.title;
+  String subtitle = dua.subtitle;
+
   switch (dua.id) {
     case 'subhaneke':
-      return {
-        'title': 'Subhanaka Dua',
-        'subtitle': 'Recited at the beginning of the prayer',
-      };
+      title = l10n.subhanekeTitle;
+      subtitle = l10n.subhanekeSubtitle;
+      break;
     case 'tahiyyat':
-      return {
-        'title': 'Tashahhud (Attahiyyatu) Dua',
-        'subtitle': 'Recited while sitting in the prayer',
-      };
+      title = l10n.tahiyyatTitle;
+      subtitle = l10n.tahiyyatSubtitle;
+      break;
     case 'salli_barik':
-      return {
-        'title': 'Allahumma Salli (Salawat)',
-        'subtitle': 'Recited in the final sitting of the prayer',
-      };
+      title = l10n.salliBarikTitle;
+      subtitle = l10n.salliBarikSubtitle;
+      break;
     case 'barik':
-      return {
-        'title': 'Allahumma Barik (Salawat)',
-        'subtitle': 'Recited in the final sitting of the prayer',
-      };
+      title = l10n.barikTitle;
+      subtitle = l10n.barikSubtitle;
+      break;
     case 'rabbena':
-      return {
-        'title': 'Rabbana Supplications',
-        'subtitle': 'Recited for all kinds of needs and duas',
-      };
+      title = l10n.rabbenaTitle;
+      subtitle = l10n.rabbenaSubtitle;
+      break;
     case 'ayetelkursi':
-      return {
-        'title': 'Ayat al-Kursi',
-        'subtitle': 'Verse of protection and blessing (Al-Baqarah 255)',
-      };
+      title = l10n.ayetelkursiTitle;
+      subtitle = l10n.ayetelkursiSubtitle;
+      break;
     case 'rabbi_yessir':
-      return {
-        'title': 'Rabbi Yassir Dua',
-        'subtitle': 'Recited for ease before starting tasks',
-      };
+      title = l10n.rabbiYessirTitle;
+      subtitle = l10n.rabbiYessirSubtitle;
+      break;
     case 'seyyidul_istigfar':
-      return {
-        'title': 'Sayyid al-Istighfar',
-        'subtitle': 'One of the most virtuous duas for seeking forgiveness',
-      };
+      title = l10n.seyyidulIstigfarTitle;
+      subtitle = l10n.seyyidulIstigfarSubtitle;
+      break;
     case 'hasbunallah':
-      return {
-        'title': 'Hasbunallahu wa Ni`mal Wakil',
-        'subtitle': 'Recited in times of difficulty and reliance upon Allah',
-      };
+      title = l10n.hasbunallahTitle;
+      subtitle = l10n.hasbunallahSubtitle;
+      break;
     case 'kunut1':
-      return {'title': 'Qunoot Dua 1', 'subtitle': 'Recited in Witr prayer'};
+      title = l10n.kunut1Title;
+      subtitle = l10n.kunut1Subtitle;
+      break;
     case 'kunut2':
-      return {'title': 'Qunoot Dua 2', 'subtitle': 'Recited in Witr prayer'};
+      title = l10n.kunut2Title;
+      subtitle = l10n.kunut2Subtitle;
+      break;
     case 'yemek':
-      return {
-        'title': 'Dua After Eating',
-        'subtitle': 'Recited after finishing a meal',
-      };
-    default:
-      return {'title': dua.title, 'subtitle': dua.subtitle};
+      title = l10n.yemekTitle;
+      subtitle = l10n.yemekSubtitle;
+      break;
   }
+  return {'title': title, 'subtitle': subtitle};
 }

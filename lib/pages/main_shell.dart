@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../l10n/app_localizations.dart';
 import 'stitch_home_page.dart';
 import 'stitch_qibla_page.dart';
 import 'stitch_quran_grid_page.dart';
 import 'stitch_more_page.dart';
+
+// Global key to access StitchHomePageState from other parts of the app
+final GlobalKey<StitchHomePageState> stitchHomePageKey =
+    GlobalKey<StitchHomePageState>();
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -16,24 +21,61 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int _index = 0;
 
+  final List<GlobalKey<NavigatorState>> _navigatorKeys = [
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     // Sayfaları burada oluştur ki "Daha Fazla" sekmesine bir callback verebilelim.
     final pages = [
-      const StitchHomePage(),
+      StitchHomePage(key: stitchHomePageKey), // Pass the global key here
       const StitchQiblaPage(),
       const StitchQuranDuaPageGrid(),
-      StitchMorePage(
-        onNavigateToTab: (idx) => setState(() => _index = idx),
-      ),
+      StitchMorePage(onNavigateToTab: (idx) => setState(() => _index = idx)),
     ];
 
-    return Scaffold(
-      body: IndexedStack(
-        index: _index,
-        children: pages,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+
+        final navigator = _navigatorKeys[_index].currentState;
+        if (navigator != null && await navigator.maybePop()) {
+          return;
+        }
+
+        if (_index != 0) {
+          setState(() => _index = 0);
+          return;
+        }
+
+        // Exit the app
+        SystemNavigator.pop();
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: _index,
+          children: pages
+              .asMap()
+              .entries
+              .map((e) => _buildNavigator(e.key, e.value))
+              .toList(),
+        ),
+        bottomNavigationBar: _buildBottomNav(context),
       ),
-      bottomNavigationBar: _buildBottomNav(context),
+    );
+  }
+
+  Widget _buildNavigator(int index, Widget child) {
+    return Navigator(
+      key: _navigatorKeys[index],
+      onGenerateRoute: (routeSettings) {
+        return MaterialPageRoute(builder: (context) => child);
+      },
     );
   }
 
@@ -49,7 +91,16 @@ class _MainShellState extends State<MainShell> {
       return Expanded(
         child: InkWell(
           borderRadius: BorderRadius.circular(999),
-          onTap: () => setState(() => _index = idx),
+          onTap: () {
+            if (_index == idx) {
+              // If tapping the same tab, pop to root
+              _navigatorKeys[idx].currentState?.popUntil(
+                (route) => route.isFirst,
+              );
+            } else {
+              setState(() => _index = idx);
+            }
+          },
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
             child: Column(

@@ -17,12 +17,22 @@ class LocaleNotifier extends StateNotifier<Locale> {
   Future<void> _loadLocale() async {
     final prefs = await SharedPreferences.getInstance();
     final languageCode = prefs.getString(_localeKey);
-    
+
     if (languageCode != null) {
       if (languageCode == 'en') {
         state = const Locale('en', 'US');
       } else {
         state = const Locale('tr', 'TR');
+      }
+    } else {
+      // First run: Check system locale
+      final systemLocale = WidgetsBinding.instance.platformDispatcher.locale;
+      if (systemLocale.languageCode == 'tr') {
+        state = const Locale('tr', 'TR');
+        await prefs.setString(_localeKey, 'tr');
+      } else {
+        state = const Locale('en', 'US');
+        await prefs.setString(_localeKey, 'en');
       }
     }
   }

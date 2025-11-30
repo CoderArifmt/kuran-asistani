@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 
 import '../l10n/app_localizations.dart';
 import '../services/notification_service.dart';
@@ -46,15 +45,18 @@ class _NotificationSettingsPageState
     await prefs.setBool(_prefsKeyPrayerNotifications, value);
     if (value) {
       await NotificationService.instance.requestPermission();
-
+      // Schedule today's adhans directly using AlarmService
       final asyncTimes = ref.read(todayPrayerTimesProvider);
       asyncTimes.whenData((times) async {
-        await AlarmService.instance.rescheduleTodayAdhans(times);
+        await AlarmService.instance.scheduleTodayAdhansIfNeeded(times);
       });
     } else {
-      for (int i = 1; i <= 5; i++) {
-        await AndroidAlarmManager.cancel(i);
+      // Cancel all notifications
+      for (int i = 1; i <= 320; i++) {
+        await NotificationService.instance.cancelReminder(i);
       }
+      // Also hide the prayer bar if notification is off
+      await NotificationService.instance.hidePrayerBar();
     }
   }
 
@@ -90,26 +92,23 @@ class _NotificationSettingsPageState
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: cs.surface,
-      appBar: AppBar(title: const Text('Notification Settings')),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            SwitchListTile.adaptive(
-              title: Text(AppLocalizations.of(context).prayerNotifications),
-              value: _prayerNotifications,
-              onChanged: _togglePrayerNotifications,
-            ),
-            SwitchListTile.adaptive(
-              title: Text(AppLocalizations.of(context).prayerBarInNotification),
-              value: _prayerBarEnabled,
-              onChanged: _togglePrayerBar,
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context).notificationSettings),
+      ),
+      body: ListView(
+        children: [
+          SwitchListTile.adaptive(
+            title: Text(AppLocalizations.of(context).prayerTimesNotification),
+            value: _prayerNotifications,
+            onChanged: _togglePrayerNotifications,
+          ),
+          SwitchListTile.adaptive(
+            title: Text(AppLocalizations.of(context).prayerBarInNotification),
+            value: _prayerBarEnabled,
+            onChanged: _togglePrayerBar,
+          ),
+        ],
       ),
     );
   }

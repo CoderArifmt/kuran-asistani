@@ -21,15 +21,8 @@ class _StitchSplashScreenState extends State<StitchSplashScreen> {
   }
 
   Future<void> _handleStartupFlow() async {
-    // Paralel yükleme - konum kontrolü ile minimum animasyon süresini birlikte çalıştır
-    final results = await Future.wait([
-      Future.delayed(const Duration(milliseconds: 800)), // Minimum splash time
-      _checkLocationPermissions(),
-    ]);
-
-    if (!mounted) return;
-
-    final hasLocation = results[1] as bool;
+    // Check location permissions directly without delay
+    final hasLocation = await _checkLocationPermissions();
 
     if (!mounted) return;
 

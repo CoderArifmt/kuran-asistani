@@ -16,15 +16,18 @@ class _TesbihCounterPageState extends State<TesbihCounterPage> {
   String _selectedZikir = 'Sübhanallah';
   bool _vibrateOnTap = true;
 
-  final List<String> _zikirOptions = [
-    'Sübhanallah',
-    'Elhamdülillah',
-    'Allahu Ekber',
-    'La ilahe illallah',
-    'Estağfirullah',
-    'Sübhanallahi ve bihamdihi',
-    'La havle vela kuvvete illa billah',
-  ];
+  List<String> _getZikirOptions(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return [
+      l10n.subhanallah,
+      l10n.alhamdulillah,
+      l10n.allahuEkber,
+      l10n.laIlaheIllallah,
+      l10n.estagfirullah,
+      l10n.subhanallahiVeBihamdihi,
+      l10n.laHavle,
+    ];
+  }
 
   final List<int> _targetOptions = [33, 99, 100, 500, 1000];
 
@@ -315,7 +318,7 @@ class _TesbihCounterPageState extends State<TesbihCounterPage> {
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
-                    children: _zikirOptions.map((zikir) {
+                    children: _getZikirOptions(context).map((zikir) {
                       final selected = _selectedZikir == zikir;
                       return ChoiceChip(
                         label: Text(zikir),

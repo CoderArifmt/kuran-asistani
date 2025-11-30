@@ -7,7 +7,7 @@ import 'more_prayer_calendar_page.dart';
 import 'more_reminders_page.dart';
 import 'more_islamic_calendar_page.dart';
 import 'more_nearby_mosques_page.dart';
-import 'more_favorites_page.dart';
+
 import 'more_support_donations_page.dart';
 import 'more_account_data_page.dart';
 import 'tesbih_counter_page.dart';
@@ -212,13 +212,7 @@ class StitchMorePage extends StatelessWidget {
           MaterialPageRoute(builder: (_) => const MoreNearbyMosquesPage()),
         ),
       ),
-      _MoreItemData(
-        icon: Icons.favorite,
-        label: l10n.favorites,
-        onTap: () => Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => const MoreFavoritesPage())),
-      ),
+
       _MoreItemData(
         icon: Icons.volunteer_activism,
         label: l10n.support,
@@ -282,6 +276,13 @@ class _MoreItem extends StatelessWidget {
           decoration: BoxDecoration(
             color: cardColor,
             borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF14B866).withValues(alpha: 0.25),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
