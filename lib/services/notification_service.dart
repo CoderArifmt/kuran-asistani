@@ -195,9 +195,13 @@ class NotificationService {
   }) async {
     try {
       // Tek sabit kullanılıyor
-      // Günün namaz vakitlerini bir satırda birleştiriyoruz
-      final String timesText =
-          'İmsak: ${times.fajr} | Güneş: ${times.sunrise} | Öğle: ${times.dhuhr} | İkindi: ${times.asr} | Akşam: ${times.maghrib} | Yatsı: ${times.isha}';
+      // 3 Satırlı Emoji Tasarımı
+      final List<String> lines = [
+        '🌑 İmsak: ${times.fajr}   🌅 Güneş: ${times.sunrise}',
+        '☀️ Öğle: ${times.dhuhr}   🌤️ İkindi: ${times.asr}',
+        '🌇 Akşam: ${times.maghrib}   🌙 Yatsı: ${times.isha}',
+      ];
+
       final AndroidNotificationDetails androidDetails =
           AndroidNotificationDetails(
             'prayer_bar_channel',
@@ -207,8 +211,8 @@ class NotificationService {
             priority: Priority.low,
             ongoing: true,
             autoCancel: false,
-            styleInformation: BigTextStyleInformation(
-              timesText,
+            styleInformation: InboxStyleInformation(
+              lines,
               contentTitle: title,
               summaryText: summaryText,
             ),

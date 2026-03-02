@@ -8,218 +8,207 @@ class StitchWelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Premium Color Palette
+    const bgTop = Color(0xFF051814);
+    const bgBottom = Color(0xFF0F3D32);
+    const accentGold = Color(0xFFD4AF37);
+    const accentGreen = Color(0xFF19E680);
 
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF112119)
-          : const Color(0xFFF6F8F7),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 24),
-                    Container(
-                      width: 96,
-                      height: 96,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF14B866).withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: const Icon(
-                        Icons.brightness_7,
-                        size: 48,
-                        color: Color(0xFF14B866),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      AppLocalizations.of(context).appName,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF0F172A),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      AppLocalizations.of(context).welcome,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF0F172A),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        final isTwoCols = constraints.maxWidth > 320;
-                        final crossAxisCount = isTwoCols ? 2 : 1;
-                        return GridView.count(
-                          crossAxisCount: crossAxisCount,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          children: [
-                            _FeatureCard(
-                              icon: Icons.schedule,
-                              title: AppLocalizations.of(
-                                context,
-                              ).prayerTimesFeature,
-                              subtitle: AppLocalizations.of(
-                                context,
-                              ).prayerTimesDesc,
-                            ),
-                            _FeatureCard(
-                              icon: Icons.explore,
-                              title: AppLocalizations.of(context).qiblaCompass,
-                              subtitle: AppLocalizations.of(
-                                context,
-                              ).qiblaCompassDesc,
-                            ),
-                            _FeatureCard(
-                              icon: Icons.menu_book,
-                              title: AppLocalizations.of(context).holyQuran,
-                              subtitle: AppLocalizations.of(
-                                context,
-                              ).holyQuranDesc,
-                            ),
-                            _FeatureCard(
-                              icon: Icons.notifications,
-                              title: AppLocalizations.of(context).reminders,
-                              subtitle: AppLocalizations.of(
-                                context,
-                              ).remindersDesc,
+      extendBodyBehindAppBar: true,
+      backgroundColor: bgBottom,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [bgTop, bgBottom],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 48),
+                      // Hero Icon with Glow
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: accentGreen.withValues(alpha: 0.2),
+                              blurRadius: 32,
+                              spreadRadius: 8,
                             ),
                           ],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      AppLocalizations.of(context).locationPermissionNeeded,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 13,
-                        color: isDark
-                            ? const Color(0xFFD1D5DB)
-                            : const Color(0xFF4B5563),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              color: cs.surface.withValues(alpha: 0.8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    height: 48,
-                    width: 400,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF14B866),
-                        foregroundColor: const Color(0xFF112119),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.mosque_outlined,
+                          size: 80,
+                          color: accentGreen,
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const LocationPermissionPage(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        AppLocalizations.of(context).letsStart,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      const SizedBox(height: 32),
+                      // Title
+                      Text(
+                        AppLocalizations.of(context).appName,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        AppLocalizations.of(context).welcome,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0.5,
+                            ),
+                      ),
+                      const SizedBox(height: 48),
+                      // Features Grid
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          return GridView.count(
+                            crossAxisCount: 2,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 1.1,
+                            children: [
+                              _GlassCard(
+                                icon: Icons.schedule_rounded,
+                                title: AppLocalizations.of(
+                                  context,
+                                ).prayerTimesFeature,
+                                accentColor: accentGold,
+                              ),
+                              _GlassCard(
+                                icon: Icons.explore_rounded,
+                                title: AppLocalizations.of(
+                                  context,
+                                ).qiblaCompass,
+                                accentColor: accentGreen,
+                              ),
+                              _GlassCard(
+                                icon: Icons.menu_book_rounded,
+                                title: AppLocalizations.of(context).holyQuran,
+                                accentColor: Colors.lightBlueAccent,
+                              ),
+                              _GlassCard(
+                                icon: Icons.notifications_active_rounded,
+                                title: AppLocalizations.of(context).reminders,
+                                accentColor: Colors.orangeAccent,
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // Bottom Action Area
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [bgBottom.withValues(alpha: 0.0), bgBottom],
+                  ),
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const LocationPermissionPage(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accentGreen,
+                      foregroundColor: bgTop,
+                      elevation: 8,
+                      shadowColor: accentGreen.withValues(alpha: 0.4),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context).letsStart.toUpperCase(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16,
+                        letterSpacing: 1.0,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    AppLocalizations.of(context).dataNotStored,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 11,
-                      color: isDark
-                          ? const Color(0xFF6B7280)
-                          : const Color(0xFF9CA3AF),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _FeatureCard extends StatelessWidget {
-  const _FeatureCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
+class _GlassCard extends StatelessWidget {
   final IconData icon;
   final String title;
-  final String subtitle;
+  final Color accentColor;
+
+  const _GlassCard({
+    required this.icon,
+    required this.title,
+    required this.accentColor,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
-      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF193333) : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isDark ? const Color(0xFF326767) : const Color(0xFFE5E7EB),
-        ),
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon,
-            size: 24,
-            color: isDark ? Colors.white : const Color(0xFF4B5563),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: accentColor.withValues(alpha: 0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: accentColor, size: 28),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Text(
             title,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF111827),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            style: TextStyle(
-              fontSize: 12,
-              color: isDark ? const Color(0xFF92C9C9) : const Color(0xFF6B7280),
-            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

@@ -45,6 +45,11 @@ app.*.map.json
 /android/app/release
 node_modules
 
+# Android signing
+/android/key.properties
+*.jks
+/android/app/upload-keystore.jks
+
 # Temporary files
 test_output*.txt
 test_result*.txt

@@ -1,4 +1,4 @@
-package com.example.namaz_kuran_asistani
+package com.namaz.apk
 
 import io.flutter.embedding.android.FlutterActivity
 

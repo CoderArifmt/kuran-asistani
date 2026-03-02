@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'location_permission_page.dart';
 import 'main_shell.dart';
+import 'welcome_page.dart';
 
 class StitchSplashScreen extends StatefulWidget {
   const StitchSplashScreen({super.key});
@@ -21,19 +23,23 @@ class _StitchSplashScreenState extends State<StitchSplashScreen> {
   }
 
   Future<void> _handleStartupFlow() async {
+    final prefs = await SharedPreferences.getInstance();
+    final seenWelcome = prefs.getBool('seen_welcome') ?? false;
+
     // Check location permissions directly without delay
     final hasLocation = await _checkLocationPermissions();
 
     if (!mounted) return;
 
-    if (!hasLocation) {
+    // Eğer hoş geldin ekranını görmediyse veya konum izni yoksa
+    if (!seenWelcome || !hasLocation) {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const LocationPermissionPage()),
+        MaterialPageRoute(builder: (_) => const StitchWelcomePage()),
       );
       return;
     }
 
-    // Konum izni varsa doğrudan ana shell
+    // Konum izni var ve hoş geldin ekranı görüldüyse -> Ana Shell
     Navigator.of(
       context,
     ).pushReplacement(MaterialPageRoute(builder: (_) => const MainShell()));
@@ -53,6 +59,14 @@ class _StitchSplashScreenState extends State<StitchSplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Cihaz dilini al (tr ise Türkçe Başlık, değilse İngilizce Başlık)
+    final String deviceLanguage =
+        ui.PlatformDispatcher.instance.locale.languageCode;
+    final String appTitle = deviceLanguage == 'tr'
+        ? 'Namaz ve Kur\'an Asistanı'
+        : 'Prayer & Quran Assistant';
+
+    // Referans görsele göre renk paleti
     // Referans görsele göre renk paleti
     const bgTop = Color(0xFF020F0A);
     const bgBottom = Color(0xFF071B14);
@@ -91,7 +105,7 @@ class _StitchSplashScreenState extends State<StitchSplashScreen> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Namaz ve Kur\'an Asistanı',
+                    appTitle,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontSize: 28,

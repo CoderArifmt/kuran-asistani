@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/app_localizations.dart';
 import 'main_shell.dart';
@@ -25,7 +26,7 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
     try {
       if (!mounted) return;
       final loc = AppLocalizations.of(context);
-      
+
       // 1. Request Location Permission
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
@@ -57,6 +58,9 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
       }
 
       // 3. Both permissions granted, proceed to the app
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('seen_welcome', true);
+
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const MainShell()),
@@ -77,6 +81,9 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
 
   Future<void> _skip() async {
     // Konum izni olmadan devam et: GPS sağlayamazsa sağlayıcılar IP tabanlı konuma düşecek.
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('seen_welcome', true);
+
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const MainShell()),
@@ -90,8 +97,9 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF112119) : const Color(0xFFF6F8F7),
+      backgroundColor: isDark
+          ? const Color(0xFF112119)
+          : const Color(0xFFF6F8F7),
       body: SafeArea(
         child: Column(
           children: [
@@ -121,16 +129,11 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
                     Text(
                       AppLocalizations.of(context).welcome,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            color: isDark
-                                ? Colors.white
-                                : const Color(0xFF0F172A),
-                          ),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                      ),
                     ),
                     const SizedBox(height: 24),
                     Row(
@@ -151,23 +154,27 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      AppLocalizations.of(context).locationAndNotificationPermission,
+                      AppLocalizations.of(
+                        context,
+                      ).locationAndNotificationPermission,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w600, fontSize: 18),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      AppLocalizations.of(context).locationAndNotificationPermissionDescription,
+                      AppLocalizations.of(
+                        context,
+                      ).locationAndNotificationPermissionDescription,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            height: 1.4,
-                            color: isDark
-                                ? const Color(0xFFD1D5DB)
-                                : const Color(0xFF4B5563),
-                          ),
+                        height: 1.4,
+                        color: isDark
+                            ? const Color(0xFFD1D5DB)
+                            : const Color(0xFF4B5563),
+                      ),
                     ),
                     const SizedBox(height: 16),
                     if (_error != null) ...[
@@ -181,10 +188,7 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
                         child: Text(
                           _error!,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: cs.error,
-                            fontSize: 13,
-                          ),
+                          style: TextStyle(color: cs.error, fontSize: 13),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -208,8 +212,7 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
                           ? const SizedBox(
                               width: 20,
                               height: 20,
-                              child:
-                                  CircularProgressIndicator(strokeWidth: 2),
+                              child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           : Text(AppLocalizations.of(context).grantPermissions),
                     ),
@@ -217,7 +220,9 @@ class _LocationPermissionPageState extends State<LocationPermissionPage> {
                   const SizedBox(height: 8),
                   TextButton(
                     onPressed: _loading ? null : _skip,
-                    child: Text(AppLocalizations.of(context).continueWithoutPermission),
+                    child: Text(
+                      AppLocalizations.of(context).continueWithoutPermission,
+                    ),
                   ),
                 ],
               ),

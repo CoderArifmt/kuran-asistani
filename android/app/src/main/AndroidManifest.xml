@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:label="namaz_kuran_asistani"
+        android:label="Namaz Vakitleri"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
