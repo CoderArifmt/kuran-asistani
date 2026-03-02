@@ -61,3 +61,4 @@ flutter:
     - assets/quran/surah_1.json
     - assets/audio/azan.mp3
     - assets/prayer_guide/
+    - assets/images/

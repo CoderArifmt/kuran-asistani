@@ -53,61 +53,106 @@ class StitchHomePageState extends ConsumerState<StitchHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     final asyncTimes = ref.watch(todayPrayerTimesProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: cs.surface,
-      body: SafeArea(
-        child: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 800),
-            height:
-                double.infinity, // Force full height to allow Expanded to work
+      body: Stack(
+        children: [
+          // 1. Ana Gradyan Arka Plan
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: isDark
+                      ? [
+                          const Color(0xFF064E3B), // Dark Emerald
+                          const Color(0xFF022C22), // Deepest Emerald
+                          Colors.black,
+                        ]
+                      : [
+                          const Color(0xFF10B981), // Emerald 500
+                          const Color(0xFF065F46), // Emerald 800
+                          const Color(0xFF064E3B), // Emerald 900
+                        ],
+                ),
+              ),
+            ),
+          ),
+          // 2. İslami Desen Katmanı (Düşük Opasite)
+          Positioned.fill(
+            child: Opacity(
+              opacity: isDark ? 0.08 : 0.12,
+              child: Image.asset(
+                'assets/images/islamic_pattern.png',
+                fit: BoxFit.cover,
+                repeat: ImageRepeat.repeat,
+              ),
+            ),
+          ),
+          // 3. İçerik
+          SafeArea(
             child: Column(
               children: [
-                // Header
-                Container(
+                // Modern Header
+                Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: cs.surface.withValues(alpha: 0.8),
+                    horizontal: 20,
+                    vertical: 16,
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(
-                        width: 48,
-                        height: 48,
-                        child: Icon(Icons.mosque, size: 28),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context).appName,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          Container(
+                            height: 3,
+                            width: 40,
+                            margin: const EdgeInsets.only(top: 4),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF34D399),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: Text(
-                          AppLocalizations.of(context).appName,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 48,
-                        height: 48,
-                        child: IconButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const SettingsPage(),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.settings, size: 24),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const SettingsPage(),
+                            ),
+                          );
+                        },
+                        icon: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.settings_outlined,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                // Body
+                // Body content
                 Expanded(
                   child: asyncTimes.when(
                     loading: () => const _HomeLoading(),
@@ -198,13 +243,15 @@ class StitchHomePageState extends ConsumerState<StitchHomePage> {
                       }
 
                       return SingleChildScrollView(
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight:
-                                MediaQuery.of(context).size.height -
-                                200, // Approximate available height
+                        physics: const BouncingScrollPhysics(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            children: [
+                              _HomeContent(times: times),
+                              const SizedBox(height: 32),
+                            ],
                           ),
-                          child: _HomeContent(times: times),
                         ),
                       );
                     },
@@ -213,7 +260,7 @@ class StitchHomePageState extends ConsumerState<StitchHomePage> {
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -291,63 +338,80 @@ class _HomeContent extends ConsumerWidget {
 
     return Column(
       children: [
-        // Location & date (dummy city / today)
+        // Modern Location & Date Card (Glassmorphism)
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: isDark
-                ? Theme.of(context).colorScheme.surface.withValues(alpha: 0.5)
-                : const Color(0xFFE5E7EB).withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            color: Colors.white.withValues(alpha: isDark ? 0.05 : 0.1),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.1),
+              width: 1,
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Text(
-                AppLocalizations.of(context).yourLocation,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: isDark
-                      ? const Color(0xFFD1D5DB)
-                      : const Color(0xFF4B5563),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF34D399).withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Icon(
+                  Icons.location_on_rounded,
+                  color: Color(0xFF34D399),
+                  size: 24,
                 ),
               ),
-              const SizedBox(height: 2),
-              Text(
-                cityName,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF111827),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                _formatDate(context, times.date),
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: isDark
-                      ? const Color(0xFFD1D5DB)
-                      : const Color(0xFF4B5563),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      cityName,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _formatDate(context, times.date),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 12),
-        // Sonraki vakit kartı (gerçek veri + geri sayım)
+        const SizedBox(height: 16),
+        // Next Prayer Card
         NextPrayerCard(times: times),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
+        // Prayer Times List with Title
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 12),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              AppLocalizations.of(context).todaysPrayerTimes,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white70,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+        ),
         PrayerRow(
           label: AppLocalizations.of(context).imsak,
           time: times.fajr,

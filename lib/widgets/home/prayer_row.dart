@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 enum PrayerRowState { past, current, future }
@@ -16,86 +17,96 @@ class PrayerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     Color bg = Colors.transparent;
     Color iconBg = Colors.transparent;
     Color iconColor = Colors.white;
     Color textColor = Colors.white;
     Color timeColor = Colors.white;
-    double opacity = 1.0;
     BoxBorder? border;
 
     switch (state) {
       case PrayerRowState.past:
       case PrayerRowState.current:
-        bg = isDark
-            ? Theme.of(context).colorScheme.surface.withValues(alpha: 0.5)
-            : const Color(0xFFE5E7EB).withValues(alpha: 0.5);
-        iconBg = isDark ? const Color(0xFF374151) : const Color(0xFFD1D5DB);
-        iconColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
-        textColor = isDark ? const Color(0xFFD1D5DB) : const Color(0xFF6B7280);
+        bg = Colors.white.withValues(alpha: 0.05);
+        iconBg = Colors.white.withValues(alpha: 0.1);
+        iconColor = Colors.white.withValues(alpha: 0.4);
+        textColor = Colors.white.withValues(alpha: 0.5);
         timeColor = textColor;
-        opacity = 0.6;
         break;
       case PrayerRowState.future:
-        bg = isDark
-            ? const Color(0xFF14B866).withValues(alpha: 0.3)
-            : const Color(0xFF14B866).withValues(alpha: 0.2);
-        iconBg = const Color(0xFF14B866);
+        bg = Colors.white.withValues(alpha: 0.15);
+        iconBg = const Color(0xFF34D399);
         iconColor = Colors.white;
-        textColor = isDark ? Colors.white : const Color(0xFF111827);
-        timeColor = textColor;
-        border = Border.all(color: const Color(0xFF14B866), width: 2);
+        textColor = Colors.white;
+        timeColor = const Color(0xFF34D399);
+        border = Border.all(
+          color: const Color(0xFF34D399).withValues(alpha: 0.5),
+          width: 1.5,
+        );
         break;
     }
 
-    return Opacity(
-      opacity: opacity,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(16),
-          border: border,
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: iconBg,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(_iconForLabel(label), size: 24, color: iconColor),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: state == PrayerRowState.future
-                      ? FontWeight.bold
-                      : FontWeight.w500,
-                  color: textColor,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(20),
+        border: border,
+        boxShadow: state == PrayerRowState.future
+            ? [
+                BoxShadow(
+                  color: const Color(0xFF34D399).withValues(alpha: 0.1),
+                  blurRadius: 10,
+                  spreadRadius: 1,
                 ),
-              ),
+              ]
+            : null,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: iconBg,
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: state == PrayerRowState.future
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFF34D399).withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                  : null,
             ),
-            Text(
-              time,
+            child: Icon(_iconForLabel(label), size: 24, color: iconColor),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              label,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: state == PrayerRowState.future
                     ? FontWeight.bold
-                    : FontWeight.w500,
-                color: timeColor,
+                    : FontWeight.w600,
+                color: textColor,
+                letterSpacing: 0.3,
               ),
             ),
-          ],
-        ),
+          ),
+          Text(
+            time,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              color: timeColor,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -179,47 +179,78 @@ class _NextPrayerCardState extends ConsumerState<NextPrayerCard> {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       decoration: BoxDecoration(
-        color: isDark
-            ? const Color(0xFF14B866).withValues(alpha: 0.2)
-            : const Color(0xFF14B866).withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.white.withValues(alpha: isDark ? 0.1 : 0.15),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.15),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 20,
+            spreadRadius: 2,
           ),
         ],
       ),
       child: Column(
         children: [
-          FittedBox(
-            fit: BoxFit.scaleDown,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.access_time_filled_rounded,
+                size: 18,
+                color: Colors.white.withValues(alpha: 0.7),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '${AppLocalizations.of(context).nextPrayer}: $nextPrayerName',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                  letterSpacing: 0.2,
+                ),
+              ),
+              Text(
+                ' ($nextClock)',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white.withValues(alpha: 0.7),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // Gradient Countdown Text
+          ShaderMask(
+            shaderCallback: (Rect bounds) {
+              return const LinearGradient(
+                colors: [Color(0xFF34D399), Color(0xFF6EE7B7)],
+              ).createShader(bounds);
+            },
             child: Text(
-              '${AppLocalizations.of(context).nextPrayer}: $nextPrayerName ($nextClock)',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: isDark
-                    ? const Color(0xFFE5E7EB)
-                    : const Color(0xFF111827),
+              '${two(hours)}:${two(minutes)}:${two(seconds)}',
+              style: const TextStyle(
+                fontSize: 52,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                letterSpacing: 2,
               ),
             ),
           ),
-          const SizedBox(height: 8),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              '${two(hours)}:${two(minutes)}:${two(seconds)}',
-              style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-                color: isDark
-                    ? const Color(0xFF14B866)
-                    : const Color(0xFF10B981),
-              ),
+          const SizedBox(height: 4),
+          Text(
+            'kaldı', // Or localize this if available
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Colors.white.withValues(alpha: 0.5),
+              letterSpacing: 3,
             ),
           ),
         ],
